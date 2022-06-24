@@ -1,5 +1,8 @@
 #include "mavideocapture.h"
 #include <QDebug>
+#include <opencv2/core/types.hpp>
+
+struct tListParam sListParamCam;
 
 MaVideoCapture::MaVideoCapture(QObject *parent)
     : QThread {parent}
@@ -13,16 +16,34 @@ void MaVideoCapture::loopTreatment()
     mVideoCapture >> mFrame;
     if (!mFrame.empty())
     {
-        mPixmap = cvMatToQPixmap(mFrame);
+        cv::cvtColor(mFrame, grayMat, CV_BGR2GRAY);
         getLuminosity();
         filterLuminosity();
-        emit NewPixmapCaptured(0);
+        detectMotion();
+
+        switch (mTypeVisu)
+        {
+        case 0:
+        default:
+            mPixmap = cvMatToQPixmap(mFrame);break;
+        case 1:
+            mPixmap = cvMatToQPixmap(mFrameBlurred);break;
+        case 2:
+            mPixmap = cvMatToQPixmap(mFrameDiff);break;
+        }
+        //mPixmap = cvMatToQPixmap(mFrameDiff);//mFrame);
+        mFrameBlurredPrev = mFrameBlurred.clone();
+        mStateCamera = CAM_OK;
     }
+    else
+    {
+        mStateCamera = CAM_HS;
+    }
+    emit NewPixmapCaptured(mStateCamera);
+
 }
 void MaVideoCapture::getLuminosity()
 {
-    cv::Mat grayMat;
-    cv::cvtColor(mFrame, grayMat, CV_BGR2GRAY);
 
     int Totalintensity = 0;
     for (int i=0; i < grayMat.rows; ++i){
@@ -43,7 +64,57 @@ void MaVideoCapture::filterLuminosity()
     {
         mLuminosityMem = mLuminosityFiltered;
         qDebug() << "nouvelle luminosité " << mLuminosityMem;
+        // ajouter l'ecriture dans un fichier de la correspondance avec l'éclairage de l'heure
     }
+}
+#define MAX_TIME_DETECT 500
+void MaVideoCapture::detectMotion()
+{
+    cv::GaussianBlur(grayMat,mFrameBlurred,cv::Size(mBlurVal,mBlurVal),0);
+    if (!mFrameBlurredPrev.empty())
+    {
+//        cv::absdiff(mFrameBlurred,mFrameBlurredPrev,mFrameDiff);
+        mFrameDiff = cv::abs(mFrameBlurred-mFrameBlurredPrev);
+//        if (cv::countNonZero(mFrameBlurred != mFrameBlurredPrev)==0)
+//            qDebug() << "identique";
+        cv::threshold(mFrameDiff,mFrameDiff,mThresholdVal,255,cv::THRESH_BINARY);
+        if (cv::countNonZero(mFrameDiff)> mSizeMvt)
+        {
+            mCptMvt = std::min(mCptMvt+1,MAX_TIME_DETECT);
+            qDebug() << "mouvement";
+        }
+        else
+        {
+            mCptMvt = std::max(mCptMvt-1,0);
+        }
+
+        if (mCptMvt >= mTimeMvt)
+        {
+            qDebug() << "enregistremeent";
+        }
+    }
+    else
+    {
+        qDebug() << "premier pas";
+    }
+}
+
+void MaVideoCapture::ManageRecording()
+{
+
+}
+void MaVideoCapture::setCalibration(struct tListParam s)
+{
+    mBlurVal=s.blur;
+    mThresholdVal=s.seuil;
+    mTypeVisu = s.typevisu;
+    mTimeMvt = s.timeMvt;
+    mSizeMvt = s.sizeMvt;
+
+}
+void MaVideoCapture::setVisu(int index)
+{
+    mTypeVisu = index;
 }
 QImage  MaVideoCapture::cvMatToQImage( const cv::Mat &inMat )
 {
