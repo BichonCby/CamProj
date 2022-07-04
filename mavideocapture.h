@@ -2,9 +2,9 @@
 #define MAVIDEOCAPTURE_H
 #include <QPixmap>
 #include <QImage>
-#include <QThread>
 #include <opencv2/opencv.hpp>
 #include "mainfenetre.h"
+#include <opencv2/core/types.hpp>
 
 #define ID_CAMERA 0
 #define KFIL_LUMINOSITY 0.9
@@ -34,16 +34,15 @@ public:
         return mLuminosity;
     }
     void loopTreatment();
-    int stateCamera() const
-    {
-        return mStateCamera;
-    }
+
+    // accesseurs simples
+    int stateCamera() const  {return mStateCamera;}
+    bool recording() const {return mRecordRequest;}
+    bool mouvement() const {return mMouvement;}
     void setCalibration(struct tListParam s);
-    void setVisu(int index);
+
 signals : // les signaux qui lancent des fonctions dans la classe principale
     void NewPixmapCaptured(int a);
-protected :
-    //void run() override;
 private :
     QPixmap mPixmap; // image de QT
     cv::Mat mFrame; //image de OpenCV
@@ -52,6 +51,7 @@ private :
     cv::Mat grayMat;
     cv::Mat mFrameDiff; //difference de frame pour motion detection
     cv::VideoCapture mVideoCapture; // Image de capture
+    cv::VideoWriter mVideoWriter; // pour l'enregistrement
     QImage  cvMatToQImage( const cv::Mat &inMat );
     QPixmap cvMatToQPixmap( const cv::Mat &inMat );
 
@@ -65,7 +65,9 @@ private :
 
     int mStateCamera = CAM_OFF;
     int mCptMvt=0;
-
+    bool mRecording = false;
+    bool mRecordRequest = false;
+    bool mMouvement = false;
     double mBlurVal;
     double mThresholdVal;
     int mTypeVisu=0;

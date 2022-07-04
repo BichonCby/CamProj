@@ -1,9 +1,7 @@
 #include "mainfenetre.h"
 #include "ui_mainfenetre.h"
 #include "mavideocapture.h"
-#include <QDebug>
-#include <QFile>
-#include <QTextStream>
+
 
 struct tListParam sListParamUi;
 
@@ -24,12 +22,16 @@ MainFenetre::MainFenetre(QWidget *parent) :
     ui->typeVisu->addItem("Blurred");
     ui->typeVisu->addItem("Diff");
     ui->typeVisu->addItem("autre");
-    sConf[0]={"blursize",5,"Interface"};
-    sConf[1]={"seuildiff",35,"Interface"};
-    sConf[2]={"typevisu",0,"Interface"};
-    sConf[3]={"tailleMvt",10,"Motion"};
-    sConf[4]={"timeMvt",5,"Motion"};
+    sConf[IDX_CONF_BLUR]={"blursize",5,"Interface"};
+    sConf[IDX_CONF_SEUIL]={"seuildiff",35,"Interface"};
+    sConf[IDX_CONF_TYPEVISU]={"typevisu",0,"Interface"};
+    sConf[IDX_CONF_SIZEMVT]={"tailleMvt",10,"Motion"};
+    sConf[IDX_CONF_TIMEMVT]={"timeMvt",5,"Motion"};
+    sConf[IDX_CONF_AUTO_ON]={"AutoON",0,"Interface"};
     readAllParam();
+    // si Auto ON est configuré, on lance directement le processus
+    if (sConf[IDX_CONF_AUTO_ON].val)
+        on_InitOpenCV_button_clicked();
 }
 
 MainFenetre::~MainFenetre()
@@ -55,6 +57,8 @@ void MainFenetre::DisplayVideo(int state)
     {
         ui->opencvFrame->setPixmap(mOpenCV_videoCapture->pixmap().scaled(500,500));
         ui->Luminosity->setText(QString::number(mOpenCV_videoCapture->luminosity()));
+        ui->RecordLed->setValue(mOpenCV_videoCapture->recording());
+        ui->MouvementLed->setValue(mOpenCV_videoCapture->mouvement());
     }
     else if (state == CAM_HS)
     {
@@ -63,6 +67,7 @@ void MainFenetre::DisplayVideo(int state)
     return;
 }
 
+// slot appelés depuis l'interface
 void MainFenetre::on_InitOpenCV_button_clicked()
 {
     sendCalibration();
@@ -82,41 +87,49 @@ void MainFenetre::on_InitOpenCV_button_clicked()
 
 void MainFenetre::on_BlurValue_valueChanged(int arg1)
 {
+    sConf[IDX_CONF_BLUR].val=arg1;
     sendCalibration();
-    sConf[0].val=arg1;
 }
 
 void MainFenetre::on_ThresholdValue_valueChanged(int arg1)
 {
+    sConf[IDX_CONF_SEUIL].val=arg1;
     sendCalibration();
-    sConf[1].val=arg1;
+
 }
 
 void MainFenetre::on_typeVisu_currentIndexChanged(int index)
 {
+    sConf[IDX_CONF_TYPEVISU].val=index;
     sendCalibration();
-    sConf[2].val=index;
+    qDebug() << index;
 }
 
 void MainFenetre::on_SizeMvtValue_valueChanged(int arg1)
 {
+    sConf[IDX_CONF_SIZEMVT].val=arg1;
     sendCalibration();
-    sConf[3].val=arg1;
 }
 
 void MainFenetre::on_TimeMvtValue_valueChanged(int arg1)
 {
+    sConf[IDX_CONF_TIMEMVT].val=arg1;
     sendCalibration();
-    sConf[4].val=arg1;
+}
+
+
+void MainFenetre::on_AutoONCheck_stateChanged(int arg1)
+{
+    sConf[IDX_CONF_AUTO_ON].val = arg1;
 }
 
 void MainFenetre::sendCalibration()
 {
-    sListParamUi.blur = sConf[0].val;
-    sListParamUi.seuil = sConf[1].val;
-    sListParamUi.typevisu = sConf[2].val;
-    sListParamUi.sizeMvt = sConf[3].val;
-    sListParamUi.timeMvt = sConf[4].val;
+    sListParamUi.blur = sConf[IDX_CONF_BLUR].val;
+    sListParamUi.seuil = sConf[IDX_CONF_SEUIL].val;
+    sListParamUi.typevisu = sConf[IDX_CONF_TYPEVISU].val;
+    sListParamUi.sizeMvt = sConf[IDX_CONF_SIZEMVT].val;
+    sListParamUi.timeMvt = sConf[IDX_CONF_TIMEMVT].val;
     mOpenCV_videoCapture->setCalibration(sListParamUi);
 }
 void MainFenetre::readAllParam()
@@ -148,12 +161,12 @@ void MainFenetre::readAllParam()
    //     qDebug() << sConf[i].name <<  " " << sConf[i].val;
     mfile.close();
     sendCalibration();
-    //mOpenCV_videoCapture->setVisu((sConf[2].val));// utile?
-    ui->BlurValue->setValue((int)(sConf[0].val));
-    ui->ThresholdValue->setValue((int)(sConf[1].val));
-    ui->typeVisu->setCurrentIndex((int)(sConf[2].val));
-    ui->SizeMvtValue->setValue((int)(sConf[3].val));
-    ui->TimeMvtValue->setValue((int)(sConf[4].val));
+    ui->BlurValue->setValue((int)(sConf[IDX_CONF_BLUR].val));
+    ui->ThresholdValue->setValue((int)(sConf[IDX_CONF_SEUIL].val));
+    ui->typeVisu->setCurrentIndex((int)(sConf[IDX_CONF_TYPEVISU].val));
+    ui->SizeMvtValue->setValue((int)(sConf[IDX_CONF_SIZEMVT].val));
+    ui->TimeMvtValue->setValue((int)(sConf[IDX_CONF_TIMEMVT].val));
+    ui->AutoONCheck->setChecked(sConf[IDX_CONF_AUTO_ON].val>0.0);
 }
 
 void MainFenetre::writeAllParam()
@@ -175,5 +188,6 @@ void MainFenetre::writeAllParam()
     }
     mfile.close();
 }
+
 
 

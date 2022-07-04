@@ -1,8 +1,6 @@
 #include "mavideocapture.h"
-#include <QDebug>
-#include <opencv2/core/types.hpp>
 
-struct tListParam sListParamCam;
+
 
 MaVideoCapture::MaVideoCapture(QObject *parent)
     : QThread {parent}
@@ -20,6 +18,7 @@ void MaVideoCapture::loopTreatment()
         getLuminosity();
         filterLuminosity();
         detectMotion();
+        ManageRecording();
 
         switch (mTypeVisu)
         {
@@ -64,33 +63,47 @@ void MaVideoCapture::filterLuminosity()
     {
         mLuminosityMem = mLuminosityFiltered;
         qDebug() << "nouvelle luminosité " << mLuminosityMem;
-        // ajouter l'ecriture dans un fichier de la correspondance avec l'éclairage de l'heure
+        QString fname="/tmp/luminosity.txt";
+        QFile file(fname);
+        if (file.open(QIODevice::ReadWrite))
+        {
+            QTextStream stream (&file);
+            stream << mLuminosityMem;
+            file.close();
+        }
     }
 }
 #define MAX_TIME_DETECT 500
+
+// fonction de détection du mouvement par différence
 void MaVideoCapture::detectMotion()
 {
+    // on floutte l'image pour limiter les écarts
     cv::GaussianBlur(grayMat,mFrameBlurred,cv::Size(mBlurVal,mBlurVal),0);
     if (!mFrameBlurredPrev.empty())
     {
-//        cv::absdiff(mFrameBlurred,mFrameBlurredPrev,mFrameDiff);
+        // si on a fait déjà un premier pas, on fait la différence absolue d'images successives
         mFrameDiff = cv::abs(mFrameBlurred-mFrameBlurredPrev);
-//        if (cv::countNonZero(mFrameBlurred != mFrameBlurredPrev)==0)
-//            qDebug() << "identique";
+        // on met en blanc ce qui est vraiment différent (au dessus d'un seuil)
         cv::threshold(mFrameDiff,mFrameDiff,mThresholdVal,255,cv::THRESH_BINARY);
+        mMouvement = false;
         if (cv::countNonZero(mFrameDiff)> mSizeMvt)
         {
+            // si on a beaucoup de pixels différents, il y a mouvement
+            // on incrémente le compteur
             mCptMvt = std::min(mCptMvt+1,MAX_TIME_DETECT);
-            qDebug() << "mouvement";
+            mMouvement = true;
         }
         else
         {
+            // sinon on décrémente le compteur
             mCptMvt = std::max(mCptMvt-1,0);
         }
-
+        mRecordRequest = false;
         if (mCptMvt >= mTimeMvt)
         {
-            qDebug() << "enregistremeent";
+            // longue détection, on commence l'enregistrement
+            mRecordRequest = true;
         }
     }
     else
@@ -99,9 +112,54 @@ void MaVideoCapture::detectMotion()
     }
 }
 
+// gestion de l'enregistrement
+// ouverture du fichie
+// enregistrement de l'image en cours
+// fermeture du fichier
+
 void MaVideoCapture::ManageRecording()
 {
+    if (mRecordRequest & !mRecording) // on va démarrer une nouvelle video
+    {
+        QDateTime date=QDateTime::currentDateTime();
+        qDebug() << date.time().hour() << date.time().minute();
+        QString filename1;
+        filename1 = "rec";
+        filename1.append(QString::number(date.date().year()));
+        if (date.date().month()<10)
+            filename1.append("0");
+        filename1.append(QString::number(date.date().month()));
+        if (date.date().day()<10)
+            filename1.append("0");
+        filename1.append(QString::number(date.date().day()));
+        filename1.append("_");
+        if (date.time().hour()<10)
+            filename1.append("0");
+        filename1.append(QString::number(date.time().hour()));
+        if (date.time().minute()<10)
+            filename1.append("0");
+        filename1.append(QString::number(date.time().minute()));
+        if (date.time().second()<10)
+            filename1.append("0");
+        filename1.append(QString::number(date.time().second()));
+        filename1.append(".avi");
 
+        mVideoWriter.open(filename1.toStdString(),CV_FOURCC('D','I','V','X'),10.0,cv::Size(640,480),true) ;
+        mRecording = true;
+        qDebug() << "fichier créé" << filename1;
+    }
+    else if (!mRecordRequest && mRecording) // fin d'enregistremeent
+    {
+        qDebug() <<  "fin d'enregistremeent";
+        mVideoWriter.release();
+        mRecording = false;
+    }
+    else if (mRecordRequest) // enregistremeent en cours
+    {
+        qDebug() << "encours";
+        mVideoWriter.write(mFrame);
+    }
+    // sinon on fait rien.
 }
 void MaVideoCapture::setCalibration(struct tListParam s)
 {
@@ -110,12 +168,9 @@ void MaVideoCapture::setCalibration(struct tListParam s)
     mTypeVisu = s.typevisu;
     mTimeMvt = s.timeMvt;
     mSizeMvt = s.sizeMvt;
+}
 
-}
-void MaVideoCapture::setVisu(int index)
-{
-    mTypeVisu = index;
-}
+// fonctions de transformation, copier coller
 QImage  MaVideoCapture::cvMatToQImage( const cv::Mat &inMat )
 {
     switch ( inMat.type() )
