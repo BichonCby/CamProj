@@ -1,7 +1,7 @@
 #include "mainfenetre.h"
 #include "ui_mainfenetre.h"
 #include "mavideocapture.h"
-
+#include "monreveil.h"
 
 struct tListParam sListParamUi;
 
@@ -11,9 +11,15 @@ MainFenetre::MainFenetre(QWidget *parent) :
 {
     ui->setupUi(this);
     mOpenCV_videoCapture = new MaVideoCapture(this);
+    mMonReveil = new MonReveil(this);
     connect(mOpenCV_videoCapture,&MaVideoCapture::NewPixmapCaptured,this,[&]()
         {
             DisplayVideo(mOpenCV_videoCapture->stateCamera());
+        });
+    connect(mMonReveil,&MonReveil::NewDisplay,this,[&]()
+        {
+            DisplayClock(mMonReveil->textDisplay());
+            DisplayAlarm(mMonReveil->alarmState());
         });
     trigger = new QTimer(this);
     connect (trigger, &QTimer::timeout, this, &MainFenetre::ticHorloge);
@@ -64,6 +70,17 @@ void MainFenetre::DisplayVideo(int state)
     {
         ui->opencvFrame->setText("Pas de caméra");
     }
+    return;
+}
+
+void MainFenetre::DisplayClock(QString t)
+{
+    ui->Time_display->setText(t);
+    return;
+}
+void MainFenetre::DisplayAlarm(bool a)
+{
+    ui->Alarm_led->setValue(a);
     return;
 }
 
@@ -189,5 +206,35 @@ void MainFenetre::writeAllParam()
     mfile.close();
 }
 
+QString formatNumber(int number)
+{
+    QString result("");
+    if (number >99 || number <0)
+        return QString("NN");
+    if (number <10)
+    {
+        result.append("0");
+        result.append(QString::number(number));
+        return result;
+    }
+    result.append(QString::number(number));
+    return result;
+}
 
 
+
+void MainFenetre::on_Mode_button_clicked()
+{
+    mMonReveil->ButtonPushed(BUTTON_MODE);
+}
+
+void MainFenetre::on_Plus_button_clicked()
+{
+    mMonReveil->ButtonPushed(BUTTON_PLUS);
+
+}
+
+void MainFenetre::on_Minus_button_clicked()
+{
+    mMonReveil->ButtonPushed(BUTTON_MOINS);
+}

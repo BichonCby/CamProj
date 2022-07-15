@@ -26,11 +26,13 @@ LIBS += -lqledplugin
 SOURCES += \
         main.cpp \
         mainfenetre.cpp \
-    mavideocapture.cpp
+    mavideocapture.cpp \
+    monreveil.cpp
 
 HEADERS += \
         mainfenetre.h \
-    mavideocapture.h
+    mavideocapture.h \
+    monreveil.h
 
 FORMS += \
         mainfenetre.ui

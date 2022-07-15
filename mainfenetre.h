@@ -36,6 +36,9 @@ struct tConf
     QString module;
 };
 
+QString formatNumber(int n);
+
+class MonReveil;
 class MaVideoCapture;
 
 class MainFenetre : public QMainWindow
@@ -61,6 +64,12 @@ private slots:
 
     void on_AutoONCheck_stateChanged(int arg1);
 
+    void on_Mode_button_clicked();
+
+    void on_Plus_button_clicked();
+
+    void on_Minus_button_clicked();
+
 private:
     void ticHorloge();
     void readAllParam();
@@ -69,7 +78,10 @@ private:
 
     Ui::MainFenetre *ui;
     MaVideoCapture *mOpenCV_videoCapture;
+    MonReveil *mMonReveil;
     void DisplayVideo(int a = 0);
+    void DisplayClock(QString t);
+    void DisplayAlarm(bool a);
     bool mCamOn = false;
     QTimer *trigger;
     struct tConf sConf[NB_PARAM];
