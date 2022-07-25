@@ -1,20 +1,75 @@
 #include "monreveil.h"
 QTimer *timer1s;
+QTimer *timer500ms;
+
 MonReveil::MonReveil(QObject *parent)
     : QThread {parent}
 {
 
     timer1s = new QTimer(this);
     connect(timer1s,&QTimer::timeout,this,&MonReveil::AfficheHeure);
+    timer500ms = new QTimer(this);
+    connect(timer500ms,&QTimer::timeout,this,&MonReveil::tic500ms);
     timer1s->start(1000);
-
+    timer500ms->start(500);
+  //  timerAlarm = new QTimer(this);
+  //  connect(timerAlarm,&QTimer::timeout,this,&MonReveil::LaunchAlarm);
+}
+void MonReveil::tic500ms()
+{
+    wink500 = !wink500;
+    //qDebug() << wink500;
+    if (modeDisplay == MODE_ALARME_AFFICHAGE)
+    {
+        if (wink500)
+            AfficheVide();
+        else
+            AfficheAlarmeTime();
+    }
+    if (modeDisplay == MODE_ALARME_REGL_H )
+    {
+        if (wink500)
+            AfficheVide();
+        else
+            AfficheAlarmeReglageHeure();
+    }
+    if (modeDisplay == MODE_ALARME_REGL_M )
+    {
+        if (wink500)
+            AfficheVide();
+        else
+            AfficheAlarmeReglageMinute();
+    }
+    return;
+}
+void MonReveil::setAlarmParameters(struct tListAlarmParam s)
+{
+    mAlarmHour = s.hour;
+    mAlarmMinut = s.minute;
+    mAlarmActivated = s.alarmON;
+    mAlarmType = s.type;
 }
 
+struct tListAlarmParam MonReveil::getAlarmParameters()
+{
+    struct tListAlarmParam s;
+    s.hour= mAlarmHour;
+    s.minute =mAlarmMinut;
+    s.alarmON = mAlarmActivated;
+    s.type = mAlarmType;
+    return s;
+}
+
+void MonReveil::AfficheVide()
+{
+    textToDisplay.clear();
+    emit NewDisplay();
+}
 void MonReveil::AfficheHeure()
 {
+    QDateTime date=QDateTime::currentDateTime();
     if (modeDisplay == MODE_HORLOGE)
     {
-        QDateTime date=QDateTime::currentDateTime();
         textToDisplay.clear();
         textToDisplay.append(formatNumber(date.time().hour()));
         if (wink) // on affiche les deux points
@@ -26,6 +81,14 @@ void MonReveil::AfficheHeure()
         wink=!wink;
         emit NewDisplay();
         // qDebug() << textToDisplay;
+    }
+    // vérification de l'alarme
+    if (date.time().second()==0)
+    {
+        if ((mAlarmActivated) && (mAlarmHour == date.time().hour()) && (mAlarmMinut == date.time().minute()))
+        {
+            LaunchAlarm();
+        }
     }
 }
 
@@ -80,7 +143,7 @@ void MonReveil::StateMachine()
         if (mPushedButton == BUTTON_MODE)
         {
             modeDisplay = MODE_ALARME_AFFICHAGE;
-            qDebug() << "chagt mode";
+           // qDebug() << "chagt mode";
         }
         mPushedButton = 0; // réinit du push
         break;
@@ -148,7 +211,7 @@ void MonReveil::StateMachine()
         if(mPushedButton == BUTTON_MODE)
         {
             modeDisplay = MODE_HORLOGE;
-            //AfficheAlarme();
+            AfficheHeure();
         }
         mPushedButton = 0;
         break;
@@ -158,7 +221,26 @@ void MonReveil::StateMachine()
 void MonReveil::ButtonPushed(int b)
 {
     mPushedButton = b; // un seul bouton à la fois
-    qDebug() <<  "bouton" << QString::number(b);
     StateMachine();
     StateMachine();
+}
+// on utilisera alors un timer pour le snooze uniquement
+// TODO
+/*void MonReveil::LaunchTimerAlarm(bool s)
+{
+    if (!s)
+        timerAlarm->stop();
+    else
+        if (!timerAlarm->isActive())
+        {
+            qDebug() << "activation de l'alarme";
+            QDateTime dateN=QDateTime::currentDateTime();
+            int t=mAlarmHour*60+mAlarmMinut-dateN.time().hour()*60-dateN.time().minute();
+            if (t<0) t+=1440;
+            timerAlarm->start(t*60*1000);
+        }
+}*/
+void MonReveil::LaunchAlarm()
+{
+    qDebug() << "ALARME!!!!";
 }

@@ -11,6 +11,8 @@
 #include <QDateTime>
 #include <QThread>
 
+#define EVENT_PROCESS 0
+
 #define CAM_OFF 0
 #define CAM_OK 1
 #define CAM_HS -1
@@ -24,6 +26,10 @@
 #define IDX_CONF_SIZEMVT 3
 #define IDX_CONF_TIMEMVT 4
 #define IDX_CONF_AUTO_ON 5
+#define IDX_CONF_ALARME_HOUR 6
+#define IDX_CONF_ALARME_MINUTE 7
+#define IDX_CONF_ALARME_ON 8
+#define IDX_CONF_ALARME_TYPE 9
 
 namespace Ui {
 class MainFenetre;
@@ -72,10 +78,11 @@ private slots:
 
 private:
     void ticHorloge();
+    void checkButton();
     void readAllParam();
     void writeAllParam();
     void sendCalibration();
-
+    void sendAlarmParameters();
     Ui::MainFenetre *ui;
     MaVideoCapture *mOpenCV_videoCapture;
     MonReveil *mMonReveil;
@@ -84,7 +91,11 @@ private:
     void DisplayAlarm(bool a);
     bool mCamOn = false;
     QTimer *trigger;
+    QTimer *buttonTimer;
     struct tConf sConf[NB_PARAM];
+    int mCptButtonMode=0;
+    int mCptButtonPlus=0;
+    int mCptButtonMoins=0;
 };
 
 #endif // MAINFENETRE_H

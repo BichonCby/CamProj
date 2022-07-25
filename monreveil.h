@@ -16,6 +16,14 @@
 #define BUTTON_MOINS 3
 #define BUTTON_SECRET 4
 
+struct tListAlarmParam
+{
+    int hour;
+    int minute;
+    int type;
+    int alarmON;
+};
+
 class MonReveil  : public QThread
 {
     Q_OBJECT
@@ -30,9 +38,13 @@ public:
         return mAlarmActivated;
     }
     void ButtonPushed(int b);
+    void setAlarmParameters(struct tListAlarmParam s);
+    struct tListAlarmParam getAlarmParameters();
 signals:
     void NewDisplay();
 private :
+    void tic500ms();
+    void AfficheVide();
     void AfficheHeure();
     void AfficheAlarmeTime();
     void AfficheAlarmeActivation();
@@ -41,16 +53,16 @@ private :
     void AfficheAlarmeTypeSonnerie();
 
     void StateMachine();
-
+    void LaunchAlarm();
     QString textToDisplay;
     bool wink=false;
+    bool wink500 =false;
     int modeDisplay=MODE_HORLOGE;
     int mPushedButton=0;
     bool mAlarmActivated = false;
     int mAlarmHour=0;
     int mAlarmMinut=0;
     int mAlarmType=0;
-   // QString textDisplay;
 };
 
 #endif // MONREVEIL_H
