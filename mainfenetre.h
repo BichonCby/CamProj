@@ -76,6 +76,8 @@ private slots:
 
     void on_Minus_button_clicked();
 
+    void on_Alarm_button_clicked();
+
 private:
     void ticHorloge();
     void checkButton();
@@ -96,6 +98,7 @@ private:
     int mCptButtonMode=0;
     int mCptButtonPlus=0;
     int mCptButtonMoins=0;
+    int mCptButtonAlarme=0;
 };
 
 #endif // MAINFENETRE_H

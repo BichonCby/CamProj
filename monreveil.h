@@ -14,7 +14,7 @@
 #define BUTTON_MODE 1
 #define BUTTON_PLUS 2
 #define BUTTON_MOINS 3
-#define BUTTON_SECRET 4
+#define BUTTON_ALARME 4
 
 struct tListAlarmParam
 {

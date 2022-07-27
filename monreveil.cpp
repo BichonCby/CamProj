@@ -104,14 +104,13 @@ void MonReveil::AfficheAlarmeTime()
 
 void MonReveil::AfficheAlarmeActivation()
 {
-    textToDisplay.clear();
+/*    textToDisplay.clear();
     textToDisplay.append("AL ");
     if (mAlarmActivated)
         textToDisplay.append("1");
     else
-        textToDisplay.append("0");
+        textToDisplay.append("0");*/
     emit NewDisplay();
-
 }
 void MonReveil::AfficheAlarmeReglageHeure()
 {
@@ -150,10 +149,10 @@ void MonReveil::StateMachine()
     case MODE_ALARME_AFFICHAGE :
         AfficheAlarmeTime();
         if (mPushedButton == BUTTON_MODE)
-            modeDisplay = ALARME_ACTIVATION;
+            modeDisplay = MODE_ALARME_REGL_H;
         mPushedButton = 0; // réinit du push
         break;
-    case ALARME_ACTIVATION :
+/*    case ALARME_ACTIVATION :
         AfficheAlarmeActivation();
         if (mPushedButton == BUTTON_PLUS || mPushedButton == BUTTON_MOINS)
         {
@@ -165,8 +164,8 @@ void MonReveil::StateMachine()
             modeDisplay = MODE_ALARME_REGL_H;
             AfficheAlarmeReglageHeure();
         }
-        mPushedButton = 0;
-        break;
+        mPushedButton = 0;*
+        break;*/
     case MODE_ALARME_REGL_H :
         AfficheAlarmeReglageHeure();
         if (mPushedButton == BUTTON_PLUS)
@@ -221,6 +220,11 @@ void MonReveil::StateMachine()
 void MonReveil::ButtonPushed(int b)
 {
     mPushedButton = b; // un seul bouton à la fois
+    if (b==BUTTON_ALARME)
+    {
+        mAlarmActivated = !mAlarmActivated;
+        AfficheAlarmeActivation();
+    }
     StateMachine();
     StateMachine();
 }

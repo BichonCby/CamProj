@@ -279,9 +279,9 @@
     </property>
     <layout class="QGridLayout" name="gridLayout">
      <item row="1" column="0">
-      <widget class="QPushButton" name="Secret_button">
+      <widget class="QPushButton" name="Alarm_button">
        <property name="text">
-        <string>Secret</string>
+        <string>Alarm</string>
        </property>
       </widget>
      </item>

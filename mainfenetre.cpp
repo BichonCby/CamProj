@@ -196,7 +196,7 @@ QString formatNumber(int number)
 
 void MainFenetre::checkButton()
 {
-#if (!EVENT_PROCESS) // on a scruter régulièrement
+#if (!EVENT_PROCESS) // on va scruter régulièrement
     if (ui->Mode_button->isDown()) // lire aussile bouton sur RPI
     {
         if (++mCptButtonMode == 1)
@@ -224,6 +224,12 @@ void MainFenetre::checkButton()
         }
     }
     else mCptButtonMoins=0;
+    if (ui->Alarm_button->isDown() && mCptButtonAlarme == 0) // lire aussile bouton sur RPI
+    {
+        mCptButtonAlarme = 5; // anti rebond
+        mMonReveil->ButtonPushed(BUTTON_ALARME);
+    }
+    else mCptButtonAlarme=std::max(0,mCptButtonAlarme-1);
 #endif
 }
 // slot appelés depuis l'interface
@@ -302,4 +308,12 @@ void MainFenetre::on_Minus_button_clicked()
 #if (EVENT_PROCESS)
     mMonReveil->ButtonPushed(BUTTON_MOINS);
 #endif
+}
+
+void MainFenetre::on_Alarm_button_clicked()
+{
+#if (EVENT_PROCESS)
+    mMonReveil->ButtonPushed(BUTTON_ALARME);
+#endif
+
 }
