@@ -3,13 +3,15 @@
 #include <opencv2/opencv.hpp>
 #include "mainfenetre.h"
 #include <opencv2/core/types.hpp>
+//#include <qsound.h>
+#include <QMediaPlayer>
 
 #define MODE_HORLOGE 0
 #define MODE_ALARME_AFFICHAGE 1
-#define ALARME_ACTIVATION 2
-#define MODE_ALARME_REGL_H 3
-#define MODE_ALARME_REGL_M 4
-#define MODE_TYPE_SONNERIE 5
+#define MODE_ALARME_REGL_H 2
+#define MODE_ALARME_REGL_M 3
+#define MODE_TYPE_SONNERIE 4
+#define MODE_VOL_ALARME 5
 
 #define BUTTON_MODE 1
 #define BUTTON_PLUS 2
@@ -51,6 +53,9 @@ private :
     void AfficheAlarmeReglageHeure();
     void AfficheAlarmeReglageMinute();
     void AfficheAlarmeTypeSonnerie();
+    void AfficheAlarmeVolume();
+
+    void BackToTimeDisplay();
 
     void StateMachine();
     void LaunchAlarm();
@@ -63,6 +68,14 @@ private :
     int mAlarmHour=0;
     int mAlarmMinut=0;
     int mAlarmType=0;
+    int mAlarmVolume=5;
+
+    QTimer *timer1s; // timer 1s pour clignotement lent
+    QTimer *timer500ms; // timer 500ms pour clignotement rapide
+    QTimer *timerSnooze; // timer pour lancer le snooze (repeat alarm)
+    QTimer *timerBackTime; // timer pour revenir à l'affichage heure après inactivité
+
+    QMediaPlayer *mMusic;
 };
 
 #endif // MONREVEIL_H

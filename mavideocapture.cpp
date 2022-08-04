@@ -123,25 +123,31 @@ void MaVideoCapture::ManageRecording()
     {
         QDateTime date=QDateTime::currentDateTime();
         qDebug() << date.time().hour() << date.time().minute();
-        QString filename1;
-        filename1 = "rec";
-        filename1.append(QString::number(date.date().year()));
-        if (date.date().month()<10)
-            filename1.append("0");
-        filename1.append(QString::number(date.date().month()));
-        if (date.date().day()<10)
-            filename1.append("0");
-        filename1.append(QString::number(date.date().day()));
+        QDir dir(".");
+        const QString year_t = QString::number(date.date().year());
+        QString month_t=formatNumber(date.date().month());
+        QString day_t=formatNumber(date.date().day());
+        QString hour_t=formatNumber(date.time().hour());
+        QString minute_t=formatNumber(date.time().minute());
+        QString second_t=formatNumber(date.time().second());
+
+        QString filename1=year_t;
+        //QString path;
+        filename1.append("/");filename1.append(month_t);filename1.append("/");filename1.append(day_t);
+        qDebug() << filename1;
+        if (!dir.exists(filename1))
+        {
+            qDebug()<< "creation répertoire";
+            qDebug()<< dir.mkpath(filename1);
+        }
+        filename1.append("/rec_");
+        filename1.append(year_t);
+        filename1.append(month_t);
+        filename1.append(day_t);
         filename1.append("_");
-        if (date.time().hour()<10)
-            filename1.append("0");
-        filename1.append(QString::number(date.time().hour()));
-        if (date.time().minute()<10)
-            filename1.append("0");
-        filename1.append(QString::number(date.time().minute()));
-        if (date.time().second()<10)
-            filename1.append("0");
-        filename1.append(QString::number(date.time().second()));
+        filename1.append(hour_t);
+        filename1.append(minute_t);
+        filename1.append(second_t);
         filename1.append(".avi");
 
         mVideoWriter.open(filename1.toStdString(),CV_FOURCC('D','I','V','X'),10.0,cv::Size(640,480),true) ;

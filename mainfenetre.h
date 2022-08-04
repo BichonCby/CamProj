@@ -6,6 +6,7 @@
 #include "qled.h"
 #include <QDebug>
 #include <QFile>
+#include <QDir>
 #include <QTextStream>
 #include <string>
 #include <QDateTime>

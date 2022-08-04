@@ -1,6 +1,5 @@
 #include "monreveil.h"
-QTimer *timer1s;
-QTimer *timer500ms;
+#include <QSound>
 
 MonReveil::MonReveil(QObject *parent)
     : QThread {parent}
@@ -8,12 +7,27 @@ MonReveil::MonReveil(QObject *parent)
 
     timer1s = new QTimer(this);
     connect(timer1s,&QTimer::timeout,this,&MonReveil::AfficheHeure);
+    timer1s->start(1000);
+
     timer500ms = new QTimer(this);
     connect(timer500ms,&QTimer::timeout,this,&MonReveil::tic500ms);
-    timer1s->start(1000);
     timer500ms->start(500);
-  //  timerAlarm = new QTimer(this);
-  //  connect(timerAlarm,&QTimer::timeout,this,&MonReveil::LaunchAlarm);
+
+    timerBackTime = new QTimer(this);
+    timerBackTime->setSingleShot(true);
+    timerBackTime->setInterval(5000);
+    connect(timerBackTime,&QTimer::timeout,this,&MonReveil::BackToTimeDisplay);
+
+    mMusic = new QMediaPlayer();
+    mMusic->setMedia(QUrl::fromLocalFile("./son1.wav")); // a voir quand on aura différentes sources
+
+}
+
+void MonReveil::BackToTimeDisplay()
+{
+    modeDisplay=MODE_HORLOGE;
+    StateMachine();
+
 }
 void MonReveil::tic500ms()
 {
@@ -134,6 +148,14 @@ void MonReveil::AfficheAlarmeTypeSonnerie()
     emit NewDisplay();
 }
 
+void MonReveil::AfficheAlarmeVolume()
+{
+    textToDisplay.clear();
+    textToDisplay.append("oO: ");
+    textToDisplay.append(QString::number(mAlarmVolume));
+    emit NewDisplay();
+
+}
 void MonReveil::StateMachine()
 {
     switch (modeDisplay)
@@ -209,6 +231,26 @@ void MonReveil::StateMachine()
         AfficheAlarmeTypeSonnerie();
         if(mPushedButton == BUTTON_MODE)
         {
+            modeDisplay = MODE_VOL_ALARME;
+            AfficheAlarmeVolume();
+        }
+        mPushedButton = 0;
+        break;
+
+    case MODE_VOL_ALARME:
+        AfficheAlarmeVolume();
+        if (mPushedButton == BUTTON_PLUS)
+        {
+            mAlarmVolume = std::min(9,mAlarmVolume+1);
+            AfficheAlarmeVolume();
+        }
+        if (mPushedButton == BUTTON_MOINS)
+        {
+            mAlarmVolume = std::max(0,mAlarmVolume-1);
+            AfficheAlarmeVolume();
+        }
+        if(mPushedButton == BUTTON_MODE)
+        {
             modeDisplay = MODE_HORLOGE;
             AfficheHeure();
         }
@@ -225,6 +267,8 @@ void MonReveil::ButtonPushed(int b)
         mAlarmActivated = !mAlarmActivated;
         AfficheAlarmeActivation();
     }
+    else
+        timerBackTime->start();
     StateMachine();
     StateMachine();
 }
@@ -247,4 +291,8 @@ void MonReveil::ButtonPushed(int b)
 void MonReveil::LaunchAlarm()
 {
     qDebug() << "ALARME!!!!";
+    modeDisplay = MODE_HORLOGE; // au cas où, mais normalement on devrait déjà y être
+    StateMachine();
+    mMusic->setVolume(mAlarmVolume*10);
+    mMusic->play();
 }
