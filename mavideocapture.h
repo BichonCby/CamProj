@@ -73,7 +73,7 @@ private :
     int mTypeVisu=0;
     int mTimeMvt;
     int mSizeMvt;
-
+    QString filename1;
 };
 
 #endif // MAVIDEOCAPTURE_H

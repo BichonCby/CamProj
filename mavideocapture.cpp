@@ -131,8 +131,7 @@ void MaVideoCapture::ManageRecording()
         QString minute_t=formatNumber(date.time().minute());
         QString second_t=formatNumber(date.time().second());
 
-        QString filename1=year_t;
-        //QString path;
+        filename1.clear();filename1.append(year_t);
         filename1.append("/");filename1.append(month_t);filename1.append("/");filename1.append(day_t);
         qDebug() << filename1;
         if (!dir.exists(filename1))
@@ -159,10 +158,16 @@ void MaVideoCapture::ManageRecording()
         qDebug() <<  "fin d'enregistremeent";
         mVideoWriter.release();
         mRecording = false;
+        // vérification de la taille du fichier
+        QFile fic(filename1);
+        if (fic.size()<1000000) //taille en bit
+            fic.remove();
+        //qDebug() << QString::number(fic.size());
+
     }
     else if (mRecordRequest) // enregistremeent en cours
     {
-        qDebug() << "encours";
+        //qDebug() << "encours";
         mVideoWriter.write(mFrame);
     }
     // sinon on fait rien.

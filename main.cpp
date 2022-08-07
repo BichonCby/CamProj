@@ -20,5 +20,4 @@ int main(int argc, char *argv[])
  * Voir quel bouton active le snooze et lequel arrête l'alarme
  * bouton mode/+/- pour snooze et on rajoute un bouton d'activation de l'alarme
  * 
- * gérer la suppression si le fichier video est trop court
  */
