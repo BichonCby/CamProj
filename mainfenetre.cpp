@@ -48,6 +48,8 @@ MainFenetre::MainFenetre(QWidget *parent) :
     // si Auto ON est configuré, on lance directement le processus
     if (sConf[IDX_CONF_AUTO_ON].val)
         on_InitOpenCV_button_clicked();
+    configGPIO();
+
 }
 
 MainFenetre::~MainFenetre()
@@ -197,7 +199,7 @@ QString formatNumber(int number)
 void MainFenetre::checkButton()
 {
 #if (!EVENT_PROCESS) // on va scruter régulièrement
-    if (ui->Mode_button->isDown()) // lire aussile bouton sur RPI
+    if (ui->Mode_button->isDown() || readGPIO(GPIO_BUTTON_MODE)) // lire aussile bouton sur RPI
     {
         if (++mCptButtonMode == 1)
         {
@@ -208,7 +210,7 @@ void MainFenetre::checkButton()
     else
         mCptButtonMode=0;
 
-    if (ui->Plus_button->isDown()) // lire aussile bouton sur RPI
+    if (ui->Plus_button->isDown()|| readGPIO(GPIO_BUTTON_PLUS)) // lire aussile bouton sur RPI
     {
         if ((++mCptButtonPlus)%5 == 1  || (mCptButtonPlus > 15 && mCptButtonPlus%2 ==1))
         {
@@ -216,7 +218,7 @@ void MainFenetre::checkButton()
         }
     }
     else mCptButtonPlus=0;
-    if (ui->Minus_button->isDown()) // lire aussile bouton sur RPI
+    if (ui->Minus_button->isDown() || readGPIO(GPIO_BUTTON_MOINS)) // lire aussile bouton sur RPI
     {
         if ((++mCptButtonMoins)%5 == 1 || (mCptButtonMoins > 15 && mCptButtonMoins%2 ==1))
         {
@@ -224,7 +226,7 @@ void MainFenetre::checkButton()
         }
     }
     else mCptButtonMoins=0;
-    if (ui->Alarm_button->isDown() && mCptButtonAlarme == 0) // lire aussile bouton sur RPI
+    if ((ui->Alarm_button->isDown() || readGPIO(GPIO_BUTTON_ALARME)) && mCptButtonAlarme == 0) // lire aussile bouton sur RPI
     {
         mCptButtonAlarme = 5; // anti rebond
         mMonReveil->ButtonPushed(BUTTON_ALARME);
@@ -316,4 +318,39 @@ void MainFenetre::on_Alarm_button_clicked()
     mMonReveil->ButtonPushed(BUTTON_ALARME);
 #endif
 
+}
+
+void MainFenetre::configGPIO()
+{
+#ifdef RASPBERRY_PI
+    wiringPiSetupGpio(); // Utilise la numérotation de pin BCM
+// bouton plus
+    pinMode(GPIO_BUTTON_PLUS, INPUT);
+    pullUpDnControl(GPIO_BUTTON_PLUS, PUD_UP);
+    pinMode(GPIO_BUTTON_MOINS, INPUT);
+    pullUpDnControl(GPIO_BUTTON_MOINS, PUD_UP);
+    pinMode(GPIO_BUTTON_MODE, INPUT);
+    pullUpDnControl(GPIO_BUTTON_MODE, PUD_UP);
+
+#endif
+
+}
+bool MainFenetre::readGPIO(int button)
+{
+#ifdef RASPBERRY_PI
+    return !digitalRead(button); // on inverse car on est en pull up
+#endif
+    if (button >0) // pour éviter le warning
+        return false;
+    else
+        return false;
+
+}
+void MainFenetre::writeGPIO(int led,bool state)
+{
+#ifdef RASPBERRY_PI
+    digitalWrite(led, state);
+#endif
+    if (state) // pour éviter le warning
+        led=led+0;
 }

@@ -6,6 +6,7 @@
 //#include <qsound.h>
 #include <QMediaPlayer>
 
+
 #define MODE_HORLOGE 0
 #define MODE_ALARME_AFFICHAGE 1
 #define MODE_ALARME_REGL_H 2

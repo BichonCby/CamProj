@@ -12,6 +12,10 @@
 #include <QDateTime>
 #include <QThread>
 
+#ifdef RASPBERRY_PI
+    #include <wiringPi.h>
+#endif
+
 #define EVENT_PROCESS 0
 
 #define CAM_OFF 0
@@ -31,6 +35,11 @@
 #define IDX_CONF_ALARME_MINUTE 7
 #define IDX_CONF_ALARME_ON 8
 #define IDX_CONF_ALARME_TYPE 9
+
+#define GPIO_BUTTON_PLUS 26
+#define GPIO_BUTTON_MOINS 11
+#define GPIO_BUTTON_MODE 11
+#define GPIO_BUTTON_ALARME 11
 
 namespace Ui {
 class MainFenetre;
@@ -86,6 +95,9 @@ private:
     void writeAllParam();
     void sendCalibration();
     void sendAlarmParameters();
+    void configGPIO();
+    bool readGPIO(int button);
+    void writeGPIO(int led,bool state);
     Ui::MainFenetre *ui;
     MaVideoCapture *mOpenCV_videoCapture;
     MonReveil *mMonReveil;
