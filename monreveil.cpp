@@ -15,7 +15,7 @@ MonReveil::MonReveil(QObject *parent)
 
     timerBackTime = new QTimer(this);
     timerBackTime->setSingleShot(true);
-    timerBackTime->setInterval(5000);
+    timerBackTime->setInterval(15000);
     connect(timerBackTime,&QTimer::timeout,this,&MonReveil::BackToTimeDisplay);
 
     mMusic = new QMediaPlayer();
@@ -76,8 +76,10 @@ struct tListAlarmParam MonReveil::getAlarmParameters()
 
 void MonReveil::AfficheVide()
 {
+    mTMtype = TM_TYPE_VIDE;
     textToDisplay.clear();
     emit NewDisplay();
+
 }
 void MonReveil::AfficheHeure()
 {
@@ -92,7 +94,10 @@ void MonReveil::AfficheHeure()
             textToDisplay.append(" ");
         //    textToDisplay.append(QString::number(date.time().minute()));
         textToDisplay.append(formatNumber(date.time().minute()));
+        mTMtype = wink?TM_TYPE_TIME_M:TM_TYPE_TIME_P;
+        mTMval = 100 * date.time().hour() + date.time().minute();
         wink=!wink;
+
         emit NewDisplay();
         // qDebug() << textToDisplay;
     }
@@ -112,6 +117,9 @@ void MonReveil::AfficheAlarmeTime()
     textToDisplay.append(formatNumber(mAlarmHour));
     textToDisplay.append(":");
     textToDisplay.append(formatNumber(mAlarmMinut));
+    // pour l'afficheur
+    mTMtype = TM_TYPE_TIME_P;
+    mTMval = 100*mAlarmHour+mAlarmMinut;
     emit NewDisplay();
     return;
 }
@@ -131,6 +139,8 @@ void MonReveil::AfficheAlarmeReglageHeure()
     textToDisplay.clear();
     textToDisplay.append(formatNumber(mAlarmHour));
     textToDisplay.append(":  ");
+    mTMtype = TM_TYPE_REGL_HOUR;
+    mTMval = mAlarmHour;
     emit NewDisplay();
 }
 void MonReveil::AfficheAlarmeReglageMinute()
@@ -138,6 +148,8 @@ void MonReveil::AfficheAlarmeReglageMinute()
     textToDisplay.clear();
     textToDisplay.append("  :");
     textToDisplay.append(formatNumber(mAlarmMinut));
+    mTMtype = TM_TYPE_REGL_MIN;
+    mTMval = mAlarmMinut;
     emit NewDisplay();
 
 }
@@ -145,6 +157,7 @@ void MonReveil::AfficheAlarmeTypeSonnerie()
 {
     textToDisplay.clear();
     textToDisplay.append("SON");
+    mTMtype = TM_TYPE_TYPE;
     emit NewDisplay();
 }
 
@@ -153,6 +166,8 @@ void MonReveil::AfficheAlarmeVolume()
     textToDisplay.clear();
     textToDisplay.append("oO: ");
     textToDisplay.append(QString::number(mAlarmVolume));
+    mTMtype = TM_TYPE_VOL;
+    mTMval = mAlarmVolume;
     emit NewDisplay();
 
 }

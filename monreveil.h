@@ -40,6 +40,14 @@ public:
     {
         return mAlarmActivated;
     }
+    int TMval() const
+    {
+        return mTMval;
+    }
+    int TMtype() const
+    {
+        return mTMtype;
+    }
     void ButtonPushed(int b);
     void setAlarmParameters(struct tListAlarmParam s);
     struct tListAlarmParam getAlarmParameters();
@@ -70,6 +78,8 @@ private :
     int mAlarmMinut=0;
     int mAlarmType=0;
     int mAlarmVolume=5;
+    int mTMval=0;
+    int mTMtype=TM_TYPE_VIDE;
 
     QTimer *timer1s; // timer 1s pour clignotement lent
     QTimer *timer500ms; // timer 500ms pour clignotement rapide

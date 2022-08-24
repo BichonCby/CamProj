@@ -40,7 +40,8 @@ SOURCES += \
 HEADERS += \
         mainfenetre.h \
     mavideocapture.h \
-    monreveil.h
+    monreveil.h \
+    tm1637.h
 
 FORMS += \
         mainfenetre.ui

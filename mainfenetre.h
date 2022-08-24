@@ -14,6 +14,7 @@
 
 #ifdef RASPBERRY_PI
     #include <wiringPi.h>
+    #include "tm1637.h"
 #endif
 
 #define EVENT_PROCESS 0
@@ -41,6 +42,13 @@
 #define GPIO_BUTTON_MODE 11
 #define GPIO_BUTTON_ALARME 11
 
+#define TM_TYPE_TIME_P  0
+#define TM_TYPE_TIME_M  1
+#define TM_TYPE_REGL_HOUR   2
+#define TM_TYPE_REGL_MIN    3
+#define TM_TYPE_VOL 4
+#define TM_TYPE_TYPE    5
+#define TM_TYPE_VIDE 10
 namespace Ui {
 class MainFenetre;
 }
@@ -98,6 +106,7 @@ private:
     void configGPIO();
     bool readGPIO(int button);
     void writeGPIO(int led,bool state);
+    void writeTM(int val,int type);
     Ui::MainFenetre *ui;
     MaVideoCapture *mOpenCV_videoCapture;
     MonReveil *mMonReveil;

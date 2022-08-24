@@ -3,6 +3,7 @@
 #include "mavideocapture.h"
 #include "monreveil.h"
 
+
 struct tListParam sListParamUi;
 struct tListAlarmParam sListAlarmParm;
 
@@ -21,6 +22,7 @@ MainFenetre::MainFenetre(QWidget *parent) :
         {
             DisplayClock(mMonReveil->textDisplay());
             DisplayAlarm(mMonReveil->alarmState());
+            writeTM(mMonReveil->TMval(),mMonReveil->TMtype());
         });
     // ************************* triggers ****
     trigger = new QTimer(this);
@@ -199,7 +201,7 @@ QString formatNumber(int number)
 void MainFenetre::checkButton()
 {
 #if (!EVENT_PROCESS) // on va scruter régulièrement
-    if (ui->Mode_button->isDown() || readGPIO(GPIO_BUTTON_MODE)) // lire aussile bouton sur RPI
+    if (ui->Mode_button->isDown() || readGPIO(GPIO_BUTTON_MODE))
     {
         if (++mCptButtonMode == 1)
         {
@@ -210,7 +212,7 @@ void MainFenetre::checkButton()
     else
         mCptButtonMode=0;
 
-    if (ui->Plus_button->isDown()|| readGPIO(GPIO_BUTTON_PLUS)) // lire aussile bouton sur RPI
+    if (ui->Plus_button->isDown()|| readGPIO(GPIO_BUTTON_PLUS))
     {
         if ((++mCptButtonPlus)%5 == 1  || (mCptButtonPlus > 15 && mCptButtonPlus%2 ==1))
         {
@@ -218,7 +220,7 @@ void MainFenetre::checkButton()
         }
     }
     else mCptButtonPlus=0;
-    if (ui->Minus_button->isDown() || readGPIO(GPIO_BUTTON_MOINS)) // lire aussile bouton sur RPI
+    if (ui->Minus_button->isDown() || readGPIO(GPIO_BUTTON_MOINS))
     {
         if ((++mCptButtonMoins)%5 == 1 || (mCptButtonMoins > 15 && mCptButtonMoins%2 ==1))
         {
@@ -226,7 +228,7 @@ void MainFenetre::checkButton()
         }
     }
     else mCptButtonMoins=0;
-    if ((ui->Alarm_button->isDown() || readGPIO(GPIO_BUTTON_ALARME)) && mCptButtonAlarme == 0) // lire aussile bouton sur RPI
+    if ((ui->Alarm_button->isDown() || readGPIO(GPIO_BUTTON_ALARME)) && mCptButtonAlarme == 0)
     {
         mCptButtonAlarme = 5; // anti rebond
         mMonReveil->ButtonPushed(BUTTON_ALARME);
@@ -331,7 +333,7 @@ void MainFenetre::configGPIO()
     pullUpDnControl(GPIO_BUTTON_MOINS, PUD_UP);
     pinMode(GPIO_BUTTON_MODE, INPUT);
     pullUpDnControl(GPIO_BUTTON_MODE, PUD_UP);
-
+    TMsetup(5,4);
 #endif
 
 }
@@ -353,4 +355,18 @@ void MainFenetre::writeGPIO(int led,bool state)
 #endif
     if (state) // pour éviter le warning
         led=led+0;
+}
+
+void MainFenetre::writeTM(int val,int type)
+{
+#ifdef RASPBERRY_PI
+    switch (type)
+    {
+        case TM_TYPE_TIME_M:
+            TMShowNumber(val,0,true,4,0);
+            break;
+    }
+#endif
+val=type;type=val; //pour éviter les warnings
+return;
 }
