@@ -13,10 +13,10 @@
 #include <QThread>
 
 #ifdef RASPBERRY_PI
-    #include <wiringPi.h>
+//    #include <wiringPi.h>
     #include "tm1637.h"
 #endif
-
+#include "tm1637.h"
 #define EVENT_PROCESS 0
 
 #define CAM_OFF 0
@@ -110,6 +110,7 @@ private:
     Ui::MainFenetre *ui;
     MaVideoCapture *mOpenCV_videoCapture;
     MonReveil *mMonReveil;
+    tm1637 *mTM1637;
     void DisplayVideo(int a = 0);
     void DisplayClock(QString t);
     void DisplayAlarm(bool a);

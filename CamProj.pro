@@ -35,7 +35,8 @@ SOURCES += \
         main.cpp \
         mainfenetre.cpp \
     mavideocapture.cpp \
-    monreveil.cpp
+    monreveil.cpp \
+    tm1637.cpp
 
 HEADERS += \
         mainfenetre.h \

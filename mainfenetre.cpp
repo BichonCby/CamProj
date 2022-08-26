@@ -7,6 +7,7 @@
 struct tListParam sListParamUi;
 struct tListAlarmParam sListAlarmParm;
 
+
 MainFenetre::MainFenetre(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainFenetre)
@@ -50,6 +51,7 @@ MainFenetre::MainFenetre(QWidget *parent) :
     // si Auto ON est configuré, on lance directement le processus
     if (sConf[IDX_CONF_AUTO_ON].val)
         on_InitOpenCV_button_clicked();
+    mTM1637 = new tm1637();
     configGPIO();
 
 }
@@ -324,7 +326,7 @@ void MainFenetre::on_Alarm_button_clicked()
 
 void MainFenetre::configGPIO()
 {
-#ifdef RASPBERRY_PI
+//#ifdef RASPBERRY_PI
     wiringPiSetupGpio(); // Utilise la numérotation de pin BCM
 // bouton plus
     pinMode(GPIO_BUTTON_PLUS, INPUT);
@@ -333,8 +335,11 @@ void MainFenetre::configGPIO()
     pullUpDnControl(GPIO_BUTTON_MOINS, PUD_UP);
     pinMode(GPIO_BUTTON_MODE, INPUT);
     pullUpDnControl(GPIO_BUTTON_MODE, PUD_UP);
-    TMsetup(5,4);
-#endif
+    mTM1637->TMsetup(24,23);
+    mTM1637->TMsetBrightness(0);
+    mTM1637->TMclear();
+    qDebug() << "GPIO et TM OK";
+//#endif
 
 }
 bool MainFenetre::readGPIO(int button)
@@ -359,14 +364,39 @@ void MainFenetre::writeGPIO(int led,bool state)
 
 void MainFenetre::writeTM(int val,int type)
 {
-#ifdef RASPBERRY_PI
+    uint8_t tWord[4]={0b01101101,0b01011100,0b01010100,0};
+    uint8_t tWordVol[4]={0b00111111,0b01011100,0,0};
+//#ifdef RASPBERRY_PI
     switch (type)
     {
-        case TM_TYPE_TIME_M:
-            TMShowNumber(val,0,true,4,0);
-            break;
+    case TM_TYPE_TIME_M:
+        mTM1637->TMshowNumber(val,0,true,4,0);
+        qDebug() << "affichage";
+        break;
+    case TM_TYPE_TIME_P:
+        mTM1637->TMshowNumber(val,64,true,4,0);
+        break;
+    case TM_TYPE_REGL_HOUR:
+        mTM1637->TMclear();
+        mTM1637->TMshowNumber(val,64,true,2,0);
+        break;
+    case TM_TYPE_REGL_MIN:
+        mTM1637->TMclear();
+        mTM1637->TMshowNumber(val,64,true,2,2);
+        break;
+    case TM_TYPE_TYPE:
+        mTM1637->TMsetSegments(tWord,4,0);
+        break;
+    case TM_TYPE_VIDE:
+        mTM1637->TMclear();
+        break;
+    case TM_TYPE_VOL:
+//        mTM1637->TMclear();
+        tWordVol[3]=val;
+        mTM1637->TMsetSegments(tWordVol,4,0);
+        break;
     }
-#endif
+//#endif
 val=type;type=val; //pour éviter les warnings
 return;
 }

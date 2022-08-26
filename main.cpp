@@ -19,5 +19,5 @@ int main(int argc, char *argv[])
  * gérer le niveau sonore
  * Voir quel bouton active le snooze et lequel arrête l'alarme
  * bouton mode/+/- pour snooze et on rajoute un bouton d'activation de l'alarme
- * 
+ * finir l'affichage de tous les modes sur le TM1637
  */
