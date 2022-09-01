@@ -23,12 +23,14 @@ void MaVideoCapture::loopTreatment()
         switch (mTypeVisu)
         {
         case 0:
-        default:
             mPixmap = cvMatToQPixmap(mFrame);break;
         case 1:
             mPixmap = cvMatToQPixmap(mFrameBlurred);break;
         case 2:
             mPixmap = cvMatToQPixmap(mFrameDiff);break;
+        case 3:
+        default:
+            mPixmap = cvMatToQPixmap(mFrameNull);break;
         }
         //mPixmap = cvMatToQPixmap(mFrameDiff);//mFrame);
         mFrameBlurredPrev = mFrameBlurred.clone();

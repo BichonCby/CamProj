@@ -11,6 +11,7 @@
 #include <string>
 #include <QDateTime>
 #include <QThread>
+#include <opencv2/core/types.hpp>
 
 #ifdef RASPBERRY_PI
 //    #include <wiringPi.h>
@@ -23,7 +24,7 @@
 #define CAM_OK 1
 #define CAM_HS -1
 
-#define NB_PARAM 20 // nombre max de paramètres dans le fichier de conf
+#define NB_PARAM 30 // nombre max de paramètres dans le fichier de conf
 #define CONFIG_FILE "config.ini"
 
 #define IDX_CONF_BLUR 0
@@ -36,6 +37,19 @@
 #define IDX_CONF_ALARME_MINUTE 7
 #define IDX_CONF_ALARME_ON 8
 #define IDX_CONF_ALARME_TYPE 9
+#define IDX_CONF_SEUIL_LUM_TRES_FAIBLE 10
+#define IDX_CONF_SEUIL_LUM_FAIBLE 11
+#define IDX_CONF_SEUIL_LUM_MOYENNE 12
+#define IDX_CONF_SEUIL_LUM_FORTE 13
+#define IDX_CONF_SEUIL_LUM_TRES_FORTE 14
+#define IDX_CONF_PIN_BTN_PLUS 15
+#define IDX_CONF_PIN_BTN_MOINS 16
+#define IDX_CONF_PIN_BTN_MODE 17
+#define IDX_CONF_PIN_BTN_ALARME 18
+#define IDX_CONF_PIN_LED_ALARME 19
+#define IDX_CONF_PIN_LED_REC 20
+#define IDX_CONF_PIN_TM_CLK 21
+#define IDX_CONF_PIN_TM_DIO 22
 
 #define GPIO_BUTTON_PLUS 26
 #define GPIO_BUTTON_MOINS 11

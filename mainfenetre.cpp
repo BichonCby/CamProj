@@ -46,6 +46,21 @@ MainFenetre::MainFenetre(QWidget *parent) :
     sConf[IDX_CONF_ALARME_MINUTE]={"AlarmMinute",0,"Alarm"};
     sConf[IDX_CONF_ALARME_ON]={"AlarmOn",0,"Alarm"};
     sConf[IDX_CONF_ALARME_TYPE]={"AlarmType",0,"Alarm"};
+    sConf[IDX_CONF_SEUIL_LUM_TRES_FAIBLE]={"LumTresFaible",40,"Luminosity"};
+    sConf[IDX_CONF_SEUIL_LUM_FAIBLE]={"LumFaible",80,"Luminosity"};
+    sConf[IDX_CONF_SEUIL_LUM_MOYENNE]={"LumMoyenne",100,"Luminosity"};
+    sConf[IDX_CONF_SEUIL_LUM_FORTE]={"LumForte",140,"Luminosity"};
+    sConf[IDX_CONF_SEUIL_LUM_TRES_FORTE]={"LumTresForte",160,"Luminosity"};
+    sConf[IDX_CONF_PIN_BTN_PLUS]={"PinBtnPlus",26,"Pinout"};
+    sConf[IDX_CONF_PIN_BTN_MOINS]={"PinBtnMoins",11,"Pinout"};
+    sConf[IDX_CONF_PIN_BTN_MODE]={"PinBtnMode",13,"Pinout"};
+    sConf[IDX_CONF_PIN_BTN_ALARME]={"PinBtnAlarme",12,"Pinout"};
+    sConf[IDX_CONF_PIN_LED_ALARME]={"PinLedAlarme",14,"Pinout"};
+    sConf[IDX_CONF_PIN_LED_REC]={"PinLedRec",15,"Pinout"};
+    sConf[IDX_CONF_PIN_TM_CLK]={"PinTMClk",24,"Pinout"};
+    sConf[IDX_CONF_PIN_TM_DIO]={"PinTMDIO",23,"Pinout"};
+
+
 
     readAllParam();
     // si Auto ON est configuré, on lance directement le processus
@@ -329,13 +344,13 @@ void MainFenetre::configGPIO()
 //#ifdef RASPBERRY_PI
     wiringPiSetupGpio(); // Utilise la numérotation de pin BCM
 // bouton plus
-    pinMode(GPIO_BUTTON_PLUS, INPUT);
+    pinMode(uint8_t(sConf[IDX_CONF_PIN_BTN_PLUS].val), INPUT);
     pullUpDnControl(GPIO_BUTTON_PLUS, PUD_UP);
-    pinMode(GPIO_BUTTON_MOINS, INPUT);
+    pinMode(uint8_t(sConf[IDX_CONF_PIN_BTN_MOINS].val), INPUT);
     pullUpDnControl(GPIO_BUTTON_MOINS, PUD_UP);
-    pinMode(GPIO_BUTTON_MODE, INPUT);
+    pinMode(uint8_t(sConf[IDX_CONF_PIN_BTN_MODE].val), INPUT);
     pullUpDnControl(GPIO_BUTTON_MODE, PUD_UP);
-    mTM1637->TMsetup(24,23);
+    mTM1637->TMsetup(uint8_t(sConf[IDX_CONF_PIN_TM_CLK].val),uint8_t(sConf[IDX_CONF_PIN_TM_DIO].val));
     mTM1637->TMsetBrightness(0);
     mTM1637->TMclear();
     qDebug() << "GPIO et TM OK";
@@ -366,6 +381,14 @@ void MainFenetre::writeTM(int val,int type)
 {
     uint8_t tWord[4]={0b01101101,0b01011100,0b01010100,0};
     uint8_t tWordVol[4]={0b00111111,0b01011100,0,0};
+    uint8_t TMlum=0;
+    float videolum=mOpenCV_videoCapture->luminosity();
+    TMlum = 0; // la base, après on regarde les seuils
+    if (videolum>uint8_t(sConf[IDX_CONF_SEUIL_LUM_FAIBLE].val)) TMlum=1;
+    if (videolum>uint8_t(sConf[IDX_CONF_SEUIL_LUM_MOYENNE].val)) TMlum=3;
+    if (videolum>uint8_t(sConf[IDX_CONF_SEUIL_LUM_FORTE].val)) TMlum=5;
+    if (videolum>uint8_t(sConf[IDX_CONF_SEUIL_LUM_TRES_FORTE].val)) TMlum=7;
+    mTM1637->TMsetBrightness(TMlum);
 //#ifdef RASPBERRY_PI
     switch (type)
     {
@@ -391,9 +414,10 @@ void MainFenetre::writeTM(int val,int type)
         mTM1637->TMclear();
         break;
     case TM_TYPE_VOL:
-//        mTM1637->TMclear();
-        tWordVol[3]=val;
-        mTM1637->TMsetSegments(tWordVol,4,0);
+        mTM1637->TMclear();
+        //tWordVol[3]=val;
+        mTM1637->TMsetSegments(tWordVol,3,1);
+        mTM1637->TMshowNumber(val,0,false,1,1);
         break;
     }
 //#endif

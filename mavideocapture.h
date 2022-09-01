@@ -4,7 +4,7 @@
 #include <QImage>
 #include <opencv2/opencv.hpp>
 #include "mainfenetre.h"
-#include <opencv2/core/types.hpp>
+#include <stdint.h>
 
 #define ID_CAMERA 0
 #define KFIL_LUMINOSITY 0.9
@@ -50,6 +50,7 @@ private :
     cv::Mat mFrameBlurredPrev; // ancienne image floutée pour motion detection
     cv::Mat grayMat;
     cv::Mat mFrameDiff; //difference de frame pour motion detection
+    cv::Mat mFrameNull= cv::Mat::zeros(500,500,CV_8UC4);
     cv::VideoCapture mVideoCapture; // Image de capture
     cv::VideoWriter mVideoWriter; // pour l'enregistrement
     QImage  cvMatToQImage( const cv::Mat &inMat );
