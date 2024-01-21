@@ -181,6 +181,22 @@ void MaVideoCapture::setCalibration(struct tListParam s)
     mTypeVisu = s.typevisu;
     mTimeMvt = s.timeMvt;
     mSizeMvt = s.sizeMvt;
+    mVideoCapture.set(cv::CAP_PROP_BRIGHTNESS,0.5);
+    qDebug() << "parametre cam CAP_PROP_BRIGHTNESS " << QString::number(mVideoCapture.get(cv::CAP_PROP_BRIGHTNESS));
+    qDebug() << "parametre cam CAP_PROP_CONTRAST " << QString::number(mVideoCapture.get(cv::CAP_PROP_CONTRAST));
+    qDebug() << "parametre cam CAP_PROP_SATURATION " << QString::number(mVideoCapture.get(cv::CAP_PROP_SATURATION));
+//    qDebug() << "parametre cam CAP_PROP_HUE " << QString::number(mVideoCapture.get(cv::CAP_PROP_HUE));
+//    qDebug() << "parametre cam CAP_PROP_GAIN " << QString::number(mVideoCapture.get(cv::CAP_PROP_GAIN));
+    qDebug() << "parametre cam CAP_PROP_EXPOSURE " << QString::number(mVideoCapture.get(cv::CAP_PROP_EXPOSURE));
+//    qDebug() << "parametre cam CAP_PROP_WHITE_BALANCE_BLUE_U " << QString::number(mVideoCapture.get(cv::CAP_PROP_WHITE_BALANCE_BLUE_U));
+//    qDebug() << "parametre cam CAP_PROP_SHARPNESS " << QString::number(mVideoCapture.get(cv::CAP_PROP_SHARPNESS));
+//    qDebug() << "parametre cam CAP_PROP_AUTO_EXPOSURE " << QString::number(mVideoCapture.get(cv::CAP_PROP_AUTO_EXPOSURE));
+//    qDebug() << "parametre cam CAP_PROP_ZOOM " << QString::number(mVideoCapture.get(cv::CAP_PROP_ZOOM));
+//    qDebug() << "parametre cam CAP_PROP_FOCUS " << QString::number(mVideoCapture.get(cv::CAP_PROP_FOCUS));
+//    qDebug() << "parametre cam CAP_PROP_AUTOFOCUS " << QString::number(mVideoCapture.get(cv::CAP_PROP_AUTOFOCUS));
+    qDebug() << "parametre cam CAP_PROP_FRAME_WIDTH " << QString::number(mVideoCapture.get(cv::CAP_PROP_FRAME_WIDTH));
+
+
 }
 
 // fonctions de transformation, copier coller

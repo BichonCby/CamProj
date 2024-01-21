@@ -6,7 +6,7 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
     a.setStyle("Fusion");
     MainFenetre w;
-    w.show();
+    w.showMinimized();
 
     return a.exec();
 }

@@ -15,7 +15,7 @@
 
 #ifdef RASPBERRY_PI
 //    #include <wiringPi.h>
-    #include "tm1637.h"
+   #include "tm1637.h"
 #endif
 #include "tm1637.h"
 #define EVENT_PROCESS 0
