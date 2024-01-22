@@ -123,6 +123,10 @@ void MainFenetre::sendCalibration()
     sListParamUi.typevisu = sConf[IDX_CONF_TYPEVISU].val;
     sListParamUi.sizeMvt = sConf[IDX_CONF_SIZEMVT].val;
     sListParamUi.timeMvt = sConf[IDX_CONF_TIMEMVT].val;
+    sListParamUi.lumLow = sConf[IDX_CONF_SEUIL_LUM_FAIBLE].val;
+    sListParamUi.lumMiddle = sConf[IDX_CONF_SEUIL_LUM_MOYENNE].val;
+    sListParamUi.lumHigh = sConf[IDX_CONF_SEUIL_LUM_FORTE].val;
+    sListParamUi.lumVeryHigh = sConf[IDX_CONF_SEUIL_LUM_TRES_FORTE].val;
     mOpenCV_videoCapture->setCalibration(sListParamUi);
 }
 void MainFenetre::sendAlarmParameters()
@@ -168,6 +172,12 @@ void MainFenetre::readAllParam()
     ui->SizeMvtValue->setValue((int)(sConf[IDX_CONF_SIZEMVT].val));
     ui->TimeMvtValue->setValue((int)(sConf[IDX_CONF_TIMEMVT].val));
     ui->AutoONCheck->setChecked(sConf[IDX_CONF_AUTO_ON].val>0.0);
+    ui->LumLowValue->setValue((int)(sConf[IDX_CONF_SEUIL_LUM_FAIBLE].val));
+    ui->LumMiddleValue->setValue((int)(sConf[IDX_CONF_SEUIL_LUM_MOYENNE].val));
+    ui->LumHighValue->setValue((int)(sConf[IDX_CONF_SEUIL_LUM_FORTE].val));
+    ui->LumVeryHighValue->setValue((int)(sConf[IDX_CONF_SEUIL_LUM_TRES_FORTE].val));
+
+
 }
 
 void MainFenetre::writeAllParam()
@@ -303,6 +313,30 @@ void MainFenetre::on_TimeMvtValue_valueChanged(int arg1)
     sendCalibration();
 }
 
+void MainFenetre::on_LumLowValue_valueChanged(int arg1)
+{
+    sConf[IDX_CONF_SEUIL_LUM_FAIBLE].val=arg1;
+    sendCalibration();
+}
+
+void MainFenetre::on_LumMiddleValue_valueChanged(int arg1)
+{
+    sConf[IDX_CONF_SEUIL_LUM_MOYENNE].val=arg1;
+    sendCalibration();
+}
+
+void MainFenetre::on_LumHighValue_valueChanged(int arg1)
+{
+    sConf[IDX_CONF_SEUIL_LUM_FORTE].val=arg1;
+    sendCalibration();
+}
+
+void MainFenetre::on_LumVeryHighValue_valueChanged(int arg1)
+{
+    sConf[IDX_CONF_SEUIL_LUM_TRES_FORTE].val=arg1;
+    sendCalibration();
+}
+
 
 void MainFenetre::on_AutoONCheck_stateChanged(int arg1)
 {
@@ -423,4 +457,31 @@ void MainFenetre::writeTM(int val,int type)
 //#endif
 val=type;type=val; //pour éviter les warnings
 return;
+}
+
+
+
+void MainFenetre::on_BrightnessValue_valueChanged(int arg1)
+{
+
+}
+
+void MainFenetre::on_BrightnessSlider_sliderMoved(int position)
+{
+
+}
+
+void MainFenetre::on_ContrastValue_valueChanged(int arg1)
+{
+
+}
+
+void MainFenetre::on_ContrastSlider_sliderMoved(int position)
+{
+
+}
+
+void MainFenetre::on_ContrastSlider_valueChanged(int value)
+{
+
 }

@@ -42,10 +42,13 @@
       <x>520</x>
       <y>120</y>
       <width>160</width>
-      <height>124</height>
+      <height>111</height>
      </rect>
     </property>
     <layout class="QFormLayout" name="formLayout">
+     <property name="verticalSpacing">
+      <number>1</number>
+     </property>
      <item row="0" column="1">
       <widget class="QSpinBox" name="BlurValue">
        <property name="singleStep">
@@ -147,16 +150,16 @@
      </rect>
     </property>
     <property name="text">
-     <string>PARAMETERS</string>
+     <string>DETECTION</string>
     </property>
    </widget>
    <widget class="QWidget" name="formLayoutWidget_3">
     <property name="geometry">
      <rect>
       <x>520</x>
-      <y>270</y>
+      <y>390</y>
       <width>215</width>
-      <height>118</height>
+      <height>51</height>
      </rect>
     </property>
     <layout class="QFormLayout" name="formLayout_3">
@@ -189,25 +192,18 @@
        </property>
       </widget>
      </item>
-     <item row="1" column="0">
-      <widget class="QLabel" name="label_7">
-       <property name="text">
-        <string>Enregistrement</string>
-       </property>
-      </widget>
-     </item>
      <item row="1" column="1">
       <widget class="QLed" name="RecordLed" native="true">
        <property name="minimumSize">
         <size>
-         <width>31</width>
-         <height>31</height>
+         <width>15</width>
+         <height>15</height>
         </size>
        </property>
        <property name="maximumSize">
         <size>
-         <width>31</width>
-         <height>31</height>
+         <width>15</width>
+         <height>15</height>
         </size>
        </property>
        <property name="toolTip">
@@ -225,14 +221,14 @@
       <widget class="QLed" name="MouvementLed" native="true">
        <property name="minimumSize">
         <size>
-         <width>31</width>
-         <height>31</height>
+         <width>15</width>
+         <height>15</height>
         </size>
        </property>
        <property name="maximumSize">
         <size>
-         <width>31</width>
-         <height>31</height>
+         <width>15</width>
+         <height>15</height>
         </size>
        </property>
        <property name="toolTip">
@@ -250,6 +246,13 @@
       <widget class="QLabel" name="label_8">
        <property name="text">
         <string>Mouvement</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="label_7">
+       <property name="text">
+        <string>Enregistrement</string>
        </property>
       </widget>
      </item>
@@ -397,6 +400,268 @@
     <property name="wordWrap">
      <bool>false</bool>
     </property>
+   </widget>
+   <widget class="QWidget" name="formLayoutWidget_5">
+    <property name="geometry">
+     <rect>
+      <x>520</x>
+      <y>260</y>
+      <width>171</width>
+      <height>123</height>
+     </rect>
+    </property>
+    <layout class="QFormLayout" name="formLayout_5">
+     <property name="horizontalSpacing">
+      <number>10</number>
+     </property>
+     <property name="verticalSpacing">
+      <number>0</number>
+     </property>
+     <item row="0" column="1">
+      <widget class="QSpinBox" name="LumLowValue">
+       <property name="maximum">
+        <number>199</number>
+       </property>
+       <property name="singleStep">
+        <number>1</number>
+       </property>
+       <property name="value">
+        <number>80</number>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="label_9">
+       <property name="text">
+        <string>Moyenne</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QSpinBox" name="LumMiddleValue">
+       <property name="maximum">
+        <number>200</number>
+       </property>
+       <property name="value">
+        <number>100</number>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="label_11">
+       <property name="text">
+        <string>Haute</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QSpinBox" name="LumHighValue">
+       <property name="maximum">
+        <number>200</number>
+       </property>
+       <property name="value">
+        <number>140</number>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0">
+      <widget class="QLabel" name="label_12">
+       <property name="text">
+        <string>Tres haute</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1">
+      <widget class="QSpinBox" name="LumVeryHighValue">
+       <property name="maximum">
+        <number>200</number>
+       </property>
+       <property name="value">
+        <number>160</number>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0">
+      <widget class="QLabel" name="label_10">
+       <property name="text">
+        <string>Basse</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QLabel" name="label_13">
+    <property name="geometry">
+     <rect>
+      <x>550</x>
+      <y>240</y>
+      <width>101</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>LUMINOSITE</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_14">
+    <property name="geometry">
+     <rect>
+      <x>550</x>
+      <y>450</y>
+      <width>171</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>PARAMETRES INTERNES</string>
+    </property>
+   </widget>
+   <widget class="QWidget" name="">
+    <property name="geometry">
+     <rect>
+      <x>521</x>
+      <y>475</y>
+      <width>211</width>
+      <height>124</height>
+     </rect>
+    </property>
+    <layout class="QGridLayout" name="gridLayout_2">
+     <item row="0" column="0">
+      <widget class="QLabel" name="label_18">
+       <property name="text">
+        <string>Brightness</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QSpinBox" name="BrightnessValue">
+       <property name="minimum">
+        <number>0</number>
+       </property>
+       <property name="maximum">
+        <number>100</number>
+       </property>
+       <property name="singleStep">
+        <number>1</number>
+       </property>
+       <property name="value">
+        <number>50</number>
+       </property>
+       <property name="displayIntegerBase">
+        <number>10</number>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="2">
+      <widget class="QSlider" name="BrightnessSlider">
+       <property name="maximum">
+        <number>100</number>
+       </property>
+       <property name="value">
+        <number>50</number>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="label_15">
+       <property name="text">
+        <string>Contrast</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QSpinBox" name="ContrastValue">
+       <property name="maximum">
+        <number>200</number>
+       </property>
+       <property name="value">
+        <number>100</number>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="label_16">
+       <property name="text">
+        <string>Saturation</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QSpinBox" name="SaturationValue">
+       <property name="maximum">
+        <number>200</number>
+       </property>
+       <property name="value">
+        <number>140</number>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0">
+      <widget class="QLabel" name="label_17">
+       <property name="text">
+        <string>Exposure</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1">
+      <widget class="QSpinBox" name="ExposureValue">
+       <property name="minimum">
+        <number>-10</number>
+       </property>
+       <property name="maximum">
+        <number>10</number>
+       </property>
+       <property name="value">
+        <number>1</number>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="2">
+      <widget class="QSlider" name="ContrastSlider">
+       <property name="maximum">
+        <number>100</number>
+       </property>
+       <property name="value">
+        <number>50</number>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="2">
+      <widget class="QSlider" name="SaturationSlider">
+       <property name="maximum">
+        <number>100</number>
+       </property>
+       <property name="value">
+        <number>50</number>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="2">
+      <widget class="QSlider" name="ExposureSlider">
+       <property name="minimum">
+        <number>-10</number>
+       </property>
+       <property name="maximum">
+        <number>10</number>
+       </property>
+       <property name="value">
+        <number>1</number>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">

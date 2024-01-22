@@ -14,8 +14,8 @@
 #include <opencv2/core/types.hpp>
 
 #ifdef RASPBERRY_PI
-//    #include <wiringPi.h>
-   #include "tm1637.h"
+    #include <wiringPi.h>
+    #include "tm1637.h"
 #endif
 #include "tm1637.h"
 #define EVENT_PROCESS 0
@@ -24,7 +24,7 @@
 #define CAM_OK 1
 #define CAM_HS -1
 
-#define NB_PARAM 30 // nombre max de paramètres dans le fichier de conf
+#define NB_PARAM 40 // nombre max de paramètres dans le fichier de conf
 #define CONFIG_FILE "config.ini"
 
 #define IDX_CONF_BLUR 0
@@ -109,6 +109,24 @@ private slots:
     void on_Minus_button_clicked();
 
     void on_Alarm_button_clicked();
+
+    void on_LumLowValue_valueChanged(int arg1);
+
+    void on_LumMiddleValue_valueChanged(int arg1);
+
+    void on_LumHighValue_valueChanged(int arg1);
+
+    void on_LumVeryHighValue_valueChanged(int arg1);
+
+    void on_BrightnessValue_valueChanged(int arg1);
+
+    void on_BrightnessSlider_sliderMoved(int position);
+
+    void on_ContrastValue_valueChanged(int arg1);
+
+    void on_ContrastSlider_sliderMoved(int position);
+
+    void on_ContrastSlider_valueChanged(int value);
 
 private:
     void ticHorloge();

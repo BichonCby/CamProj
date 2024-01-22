@@ -6,7 +6,6 @@
 #include "mainfenetre.h"
 #include <stdint.h>
 
-
 #define ID_CAMERA 0
 #define KFIL_LUMINOSITY 0.9
 #define KDIFF_NEW_LUMINOSITY 20
@@ -18,6 +17,10 @@ struct tListParam
     int typevisu;
     int timeMvt;
     int sizeMvt;
+    int lumLow;
+    int lumMiddle;
+    int lumHigh;
+    int lumVeryHigh;
 };
 
 
