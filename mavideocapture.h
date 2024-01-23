@@ -21,6 +21,10 @@ struct tListParam
     int lumMiddle;
     int lumHigh;
     int lumVeryHigh;
+    int brightness;
+    int saturation;
+    int exposure;
+    int contrast;
 };
 
 

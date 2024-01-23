@@ -59,7 +59,10 @@ MainFenetre::MainFenetre(QWidget *parent) :
     sConf[IDX_CONF_PIN_LED_REC]={"PinLedRec",15,"Pinout"};
     sConf[IDX_CONF_PIN_TM_CLK]={"PinTMClk",24,"Pinout"};
     sConf[IDX_CONF_PIN_TM_DIO]={"PinTMDIO",23,"Pinout"};
-
+    sConf[IDX_CONF_CAM_BRIGHTNESS]={"Brightness",50,"Camera"};
+    sConf[IDX_CONF_CAM_SATURATION]={"Saturation",50,"Camera"};
+    sConf[IDX_CONF_CAM_CONTRAST]={"Contrast",50,"Camera"};
+    sConf[IDX_CONF_CAM_EXPOSURE]={"Exposure",1,"Camera"};
 
 
     readAllParam();
@@ -127,6 +130,11 @@ void MainFenetre::sendCalibration()
     sListParamUi.lumMiddle = sConf[IDX_CONF_SEUIL_LUM_MOYENNE].val;
     sListParamUi.lumHigh = sConf[IDX_CONF_SEUIL_LUM_FORTE].val;
     sListParamUi.lumVeryHigh = sConf[IDX_CONF_SEUIL_LUM_TRES_FORTE].val;
+    sListParamUi.brightness = sConf[IDX_CONF_CAM_BRIGHTNESS].val;
+    sListParamUi.saturation = sConf[IDX_CONF_CAM_SATURATION].val;
+    sListParamUi.contrast = sConf[IDX_CONF_CAM_CONTRAST].val;
+    sListParamUi.exposure= sConf[IDX_CONF_CAM_EXPOSURE].val;
+
     mOpenCV_videoCapture->setCalibration(sListParamUi);
 }
 void MainFenetre::sendAlarmParameters()
@@ -176,7 +184,14 @@ void MainFenetre::readAllParam()
     ui->LumMiddleValue->setValue((int)(sConf[IDX_CONF_SEUIL_LUM_MOYENNE].val));
     ui->LumHighValue->setValue((int)(sConf[IDX_CONF_SEUIL_LUM_FORTE].val));
     ui->LumVeryHighValue->setValue((int)(sConf[IDX_CONF_SEUIL_LUM_TRES_FORTE].val));
-
+    ui->BrightnessValue->setValue((int)(sConf[IDX_CONF_CAM_BRIGHTNESS].val));
+    ui->BrightnessSlider->setValue((int)(sConf[IDX_CONF_CAM_BRIGHTNESS].val));
+    ui->SaturationValue->setValue((int)(sConf[IDX_CONF_CAM_SATURATION].val));
+    ui->SaturationSlider->setValue((int)(sConf[IDX_CONF_CAM_SATURATION].val));
+    ui->ContrastValue->setValue((int)(sConf[IDX_CONF_CAM_CONTRAST].val));
+    ui->ContrastSlider->setValue((int)(sConf[IDX_CONF_CAM_CONTRAST].val));
+    ui->ExposureValue->setValue((int)(sConf[IDX_CONF_CAM_EXPOSURE].val));
+    ui->ExposureSlider->setValue((int)(sConf[IDX_CONF_CAM_EXPOSURE].val));
 
 }
 
@@ -463,25 +478,65 @@ return;
 
 void MainFenetre::on_BrightnessValue_valueChanged(int arg1)
 {
-
+    sConf[IDX_CONF_CAM_BRIGHTNESS].val=arg1;
+//    ui->BrightnessValue->setValue((int)(sConf[IDX_CONF_CAM_BRIGHTNESS].val));
+    ui->BrightnessSlider->setValue((int)(sConf[IDX_CONF_CAM_BRIGHTNESS].val));
+    sendCalibration();
 }
 
-void MainFenetre::on_BrightnessSlider_sliderMoved(int position)
+void MainFenetre::on_BrightnessSlider_valueChanged(int value)
 {
+    sConf[IDX_CONF_CAM_BRIGHTNESS].val=value;
+    ui->BrightnessValue->setValue((int)(sConf[IDX_CONF_CAM_BRIGHTNESS].val));
+    sendCalibration();
 
 }
 
 void MainFenetre::on_ContrastValue_valueChanged(int arg1)
 {
-
-}
-
-void MainFenetre::on_ContrastSlider_sliderMoved(int position)
-{
+    sConf[IDX_CONF_CAM_CONTRAST].val=arg1;
+    ui->ContrastSlider->setValue((int)(sConf[IDX_CONF_CAM_CONTRAST].val));
+    sendCalibration();
 
 }
 
 void MainFenetre::on_ContrastSlider_valueChanged(int value)
 {
+    sConf[IDX_CONF_CAM_CONTRAST].val=value;
+    ui->ContrastValue->setValue((int)(sConf[IDX_CONF_CAM_CONTRAST].val));
+    sendCalibration();
+
+}
+
+
+void MainFenetre::on_SaturationValue_valueChanged(int arg1)
+{
+    sConf[IDX_CONF_CAM_SATURATION].val=arg1;
+    ui->SaturationSlider->setValue((int)(sConf[IDX_CONF_CAM_SATURATION].val));
+    sendCalibration();
+
+}
+
+void MainFenetre::on_SaturationSlider_valueChanged(int value)
+{
+    sConf[IDX_CONF_CAM_SATURATION].val=value;
+    ui->SaturationValue->setValue((int)(sConf[IDX_CONF_CAM_SATURATION].val));
+    sendCalibration();
+
+}
+
+void MainFenetre::on_ExposureValue_valueChanged(int arg1)
+{
+    sConf[IDX_CONF_CAM_EXPOSURE].val=arg1;
+    ui->ExposureSlider->setValue((int)(sConf[IDX_CONF_CAM_EXPOSURE].val));
+    sendCalibration();
+
+}
+
+void MainFenetre::on_ExposureSlider_valueChanged(int value)
+{
+    sConf[IDX_CONF_CAM_EXPOSURE].val=value;
+    ui->ExposureValue->setValue((int)(sConf[IDX_CONF_CAM_EXPOSURE].val));
+    sendCalibration();
 
 }

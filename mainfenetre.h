@@ -27,6 +27,7 @@
 #define NB_PARAM 40 // nombre max de paramètres dans le fichier de conf
 #define CONFIG_FILE "config.ini"
 
+// index de configuration
 #define IDX_CONF_BLUR 0
 #define IDX_CONF_SEUIL 1
 #define IDX_CONF_TYPEVISU 2
@@ -50,7 +51,13 @@
 #define IDX_CONF_PIN_LED_REC 20
 #define IDX_CONF_PIN_TM_CLK 21
 #define IDX_CONF_PIN_TM_DIO 22
+#define IDX_CONF_CAM_BRIGHTNESS 23
+#define IDX_CONF_CAM_SATURATION 24
+#define IDX_CONF_CAM_CONTRAST 25
+#define IDX_CONF_CAM_EXPOSURE 26
 
+
+// pin GPIO
 #define GPIO_BUTTON_PLUS 26
 #define GPIO_BUTTON_MOINS 11
 #define GPIO_BUTTON_MODE 11
@@ -120,13 +127,19 @@ private slots:
 
     void on_BrightnessValue_valueChanged(int arg1);
 
-    void on_BrightnessSlider_sliderMoved(int position);
-
     void on_ContrastValue_valueChanged(int arg1);
 
-    void on_ContrastSlider_sliderMoved(int position);
-
     void on_ContrastSlider_valueChanged(int value);
+
+    void on_BrightnessSlider_valueChanged(int value);
+
+    void on_SaturationValue_valueChanged(int arg1);
+
+    void on_SaturationSlider_valueChanged(int value);
+
+    void on_ExposureValue_valueChanged(int arg1);
+
+    void on_ExposureSlider_valueChanged(int value);
 
 private:
     void ticHorloge();

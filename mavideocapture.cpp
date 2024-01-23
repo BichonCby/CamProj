@@ -181,7 +181,10 @@ void MaVideoCapture::setCalibration(struct tListParam s)
     mTypeVisu = s.typevisu;
     mTimeMvt = s.timeMvt;
     mSizeMvt = s.sizeMvt;
-    mVideoCapture.set(cv::CAP_PROP_BRIGHTNESS,0.5);
+    mVideoCapture.set(cv::CAP_PROP_BRIGHTNESS,s.brightness);
+    mVideoCapture.set(cv::CAP_PROP_CONTRAST,s.contrast);
+    mVideoCapture.set(cv::CAP_PROP_SATURATION,s.saturation);
+    mVideoCapture.set(cv::CAP_PROP_EXPOSURE,s.exposure);
     qDebug() << "parametre cam CAP_PROP_BRIGHTNESS " << QString::number(mVideoCapture.get(cv::CAP_PROP_BRIGHTNESS));
     qDebug() << "parametre cam CAP_PROP_CONTRAST " << QString::number(mVideoCapture.get(cv::CAP_PROP_CONTRAST));
     qDebug() << "parametre cam CAP_PROP_SATURATION " << QString::number(mVideoCapture.get(cv::CAP_PROP_SATURATION));
