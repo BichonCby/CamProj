@@ -98,6 +98,7 @@ void MainFenetre::DisplayVideo(int state)
         ui->opencvFrame->setPixmap(mOpenCV_videoCapture->pixmap().scaled(500,500));
         ui->Luminosity->setText(QString::number(mOpenCV_videoCapture->luminosity()));
         ui->RecordLed->setValue(mOpenCV_videoCapture->recording());
+        writeGPIO(sConf[IDX_CONF_PIN_LED_REC].val,mOpenCV_videoCapture->recording());
         ui->MouvementLed->setValue(mOpenCV_videoCapture->mouvement());
     }
     else if (state == CAM_HS)
@@ -395,10 +396,16 @@ void MainFenetre::configGPIO()
 // bouton plus
     pinMode(uint8_t(sConf[IDX_CONF_PIN_BTN_PLUS].val), INPUT);
     pullUpDnControl(GPIO_BUTTON_PLUS, PUD_UP);
+    // bouton moins
     pinMode(uint8_t(sConf[IDX_CONF_PIN_BTN_MOINS].val), INPUT);
     pullUpDnControl(GPIO_BUTTON_MOINS, PUD_UP);
+    // bouton mode
     pinMode(uint8_t(sConf[IDX_CONF_PIN_BTN_MODE].val), INPUT);
     pullUpDnControl(GPIO_BUTTON_MODE, PUD_UP);
+// sorties LED
+    pinMode(uint8_t(sConf[IDX_CONF_PIN_LED_ALARME].val), OUTPUT);
+    pinMode(uint8_t(sConf[IDX_CONF_PIN_LED_REC].val), INPUT);
+
     mTM1637->TMsetup(uint8_t(sConf[IDX_CONF_PIN_TM_CLK].val),uint8_t(sConf[IDX_CONF_PIN_TM_DIO].val));
     mTM1637->TMsetBrightness(0);
     mTM1637->TMclear();
