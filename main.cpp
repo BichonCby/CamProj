@@ -9,6 +9,7 @@ int main(int argc, char *argv[])
     MainFenetre w;
     w.showMinimized();
     // commentaire pour rien
+    //un autre
     return a.exec();
 }
 
