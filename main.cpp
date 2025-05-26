@@ -8,7 +8,7 @@ int main(int argc, char *argv[])
     a.setStyle("Fusion");
     MainFenetre w;
     w.showMinimized();
-
+    // commentaire pour rien
     return a.exec();
 }
 
