@@ -25,6 +25,7 @@ struct tListParam
     int saturation;
     int exposure;
     int contrast;
+    int modeFile;
 };
 
 
@@ -60,6 +61,7 @@ private :
     cv::Mat mFrameDiff; //difference de frame pour motion detection
     cv::Mat mFrameNull= cv::Mat::zeros(500,500,CV_8UC4);
     cv::VideoCapture mVideoCapture; // Image de capture
+    cv::VideoCapture mVideoCaptureFile; // image issue d'un fichier
     cv::VideoWriter mVideoWriter; // pour l'enregistrement
     QImage  cvMatToQImage( const cv::Mat &inMat );
     QPixmap cvMatToQPixmap( const cv::Mat &inMat );
@@ -82,6 +84,7 @@ private :
     int mTypeVisu=0;
     int mTimeMvt;
     int mSizeMvt;
+    int mModeFile;
     QString filename1;
 };
 

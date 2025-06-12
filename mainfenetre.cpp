@@ -135,6 +135,9 @@ void MainFenetre::sendCalibration()
     sListParamUi.saturation = sConf[IDX_CONF_CAM_SATURATION].val;
     sListParamUi.contrast = sConf[IDX_CONF_CAM_CONTRAST].val;
     sListParamUi.exposure= sConf[IDX_CONF_CAM_EXPOSURE].val;
+    sListParamUi.modeFile= sConf[IDX_CONF_MODE_FILE].val;
+   // qDebug() << "send calibration  mode file " << sConf[IDX_CONF_MODE_FILE].val;
+   // qDebug() << "send calibration  mode file " << sListParamUi.modeFile;
 
     mOpenCV_videoCapture->setCalibration(sListParamUi);
 }
@@ -279,20 +282,28 @@ void MainFenetre::checkButton()
     else mCptButtonAlarme=std::max(0,mCptButtonAlarme-1);
 #endif
 }
-// slot appelés depuis l'interface
+// slot appelés depuis l'interface, on appui sur le bouton start stop, au au demarrage si Auto ON
 void MainFenetre::on_InitOpenCV_button_clicked()
 {
+    //qDebug() << "mode file : " << mModeFichier;
+    //qDebug() << "mode cam : " << mCamOn;
     sendCalibration();
     if (mCamOn == false)
     {
         mCamOn = true;
-        ui->InitOpenCV_button->setText(QString("Stop Camera"));
+        if (mModeFichier == true) // on est en mode fichier, pas besoin de camera
+            ui->InitOpenCV_button->setText(QString("Stop File"));
+          else
+            ui->InitOpenCV_button->setText(QString("Stop Camera"));
         trigger->start(100);
     }
     else
     {
         mCamOn = false;
-        ui->InitOpenCV_button->setText(QString("Start Camera"));
+        if (mModeFichier == true) // on est en mode fichier, pas besoin de camera
+            ui->InitOpenCV_button->setText(QString("Start File"));
+        else
+            ui->InitOpenCV_button->setText(QString("Start Camera"));
         trigger->stop();
     }
 }
@@ -547,3 +558,24 @@ void MainFenetre::on_ExposureSlider_valueChanged(int value)
     sendCalibration();
 
 }
+
+void MainFenetre::on_FileONCheck_stateChanged(int arg1)
+{
+    qDebug() << "File mode appui bouton start" << arg1;
+    if (arg1 == 2) // on veut jouer le fichier
+    {
+        sConf[IDX_CONF_MODE_FILE].val=1;
+        mCamOn = false;
+        mModeFichier = 1;
+        ui->InitOpenCV_button->setText(QString("Start File"));
+    }
+    else
+    {
+        sConf[IDX_CONF_MODE_FILE].val=0;
+        mCamOn = false;
+        mModeFichier = 0;
+        ui->InitOpenCV_button->setText(QString("Start Camera"));
+    }
+    sendCalibration();
+}
+

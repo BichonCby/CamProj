@@ -5,16 +5,20 @@
 MaVideoCapture::MaVideoCapture(QObject *parent)
     : QThread {parent}
     , mVideoCapture {ID_CAMERA}
+    , mVideoCaptureFile {"1_Hello.mp4"}
 {
 
 }
 
 void MaVideoCapture::loopTreatment()
 {
-    mVideoCapture >> mFrame;
+    if (mModeFile == true)
+        mVideoCaptureFile >> mFrame;
+    else
+        mVideoCapture >> mFrame;
     if (!mFrame.empty())
     {
-        cv::cvtColor(mFrame, grayMat, CV_BGR2GRAY);
+        cv::cvtColor(mFrame, grayMat, cv::COLOR_BGR2GRAY);
         getLuminosity();
         filterLuminosity();
         detectMotion();
@@ -151,7 +155,8 @@ void MaVideoCapture::ManageRecording()
         filename1.append(second_t);
         filename1.append(".avi");
 
-        mVideoWriter.open(filename1.toStdString(),CV_FOURCC('D','I','V','X'),10.0,cv::Size(640,480),true) ;
+//mVideoWriter.open(filename1.toStdString(),CV_FOURCC('D','I','V','X'),10.0,cv::Size(640,480),true) ; opencv2
+        mVideoWriter.open(filename1.toStdString(),cv::VideoWriter::fourcc('D','I','V','X'),10.0,cv::Size(640,480),true) ; // opencv4
         mRecording = true;
         qDebug() << "fichier créé" << filename1;
     }
@@ -181,23 +186,26 @@ void MaVideoCapture::setCalibration(struct tListParam s)
     mTypeVisu = s.typevisu;
     mTimeMvt = s.timeMvt;
     mSizeMvt = s.sizeMvt;
+    mModeFile = s.modeFile;
+   // qDebug() << "set calibration  mode file " << mModeFile;
+
     mVideoCapture.set(cv::CAP_PROP_BRIGHTNESS,((double)s.brightness)/100.0);
     mVideoCapture.set(cv::CAP_PROP_CONTRAST,((double)s.contrast)/100.0);
     mVideoCapture.set(cv::CAP_PROP_SATURATION,((double)s.saturation)/100.0);
     mVideoCapture.set(cv::CAP_PROP_EXPOSURE,s.exposure);
-    qDebug() << "parametre cam CAP_PROP_BRIGHTNESS " << QString::number(mVideoCapture.get(cv::CAP_PROP_BRIGHTNESS));
-    qDebug() << "parametre cam CAP_PROP_CONTRAST " << QString::number(mVideoCapture.get(cv::CAP_PROP_CONTRAST));
-    qDebug() << "parametre cam CAP_PROP_SATURATION " << QString::number(mVideoCapture.get(cv::CAP_PROP_SATURATION));
+   // qDebug() << "parametre cam CAP_PROP_BRIGHTNESS " << QString::number(mVideoCapture.get(cv::CAP_PROP_BRIGHTNESS));
+    //qDebug() << "parametre cam CAP_PROP_CONTRAST " << QString::number(mVideoCapture.get(cv::CAP_PROP_CONTRAST));
+    //qDebug() << "parametre cam CAP_PROP_SATURATION " << QString::number(mVideoCapture.get(cv::CAP_PROP_SATURATION));
 //    qDebug() << "parametre cam CAP_PROP_HUE " << QString::number(mVideoCapture.get(cv::CAP_PROP_HUE));
 //    qDebug() << "parametre cam CAP_PROP_GAIN " << QString::number(mVideoCapture.get(cv::CAP_PROP_GAIN));
-    qDebug() << "parametre cam CAP_PROP_EXPOSURE " << QString::number(mVideoCapture.get(cv::CAP_PROP_EXPOSURE));
+    //qDebug() << "parametre cam CAP_PROP_EXPOSURE " << QString::number(mVideoCapture.get(cv::CAP_PROP_EXPOSURE));
 //    qDebug() << "parametre cam CAP_PROP_WHITE_BALANCE_BLUE_U " << QString::number(mVideoCapture.get(cv::CAP_PROP_WHITE_BALANCE_BLUE_U));
 //    qDebug() << "parametre cam CAP_PROP_SHARPNESS " << QString::number(mVideoCapture.get(cv::CAP_PROP_SHARPNESS));
 //    qDebug() << "parametre cam CAP_PROP_AUTO_EXPOSURE " << QString::number(mVideoCapture.get(cv::CAP_PROP_AUTO_EXPOSURE));
 //    qDebug() << "parametre cam CAP_PROP_ZOOM " << QString::number(mVideoCapture.get(cv::CAP_PROP_ZOOM));
 //    qDebug() << "parametre cam CAP_PROP_FOCUS " << QString::number(mVideoCapture.get(cv::CAP_PROP_FOCUS));
 //    qDebug() << "parametre cam CAP_PROP_AUTOFOCUS " << QString::number(mVideoCapture.get(cv::CAP_PROP_AUTOFOCUS));
-    qDebug() << "parametre cam CAP_PROP_FRAME_WIDTH " << QString::number(mVideoCapture.get(cv::CAP_PROP_FRAME_WIDTH));
+   // qDebug() << "parametre cam CAP_PROP_FRAME_WIDTH " << QString::number(mVideoCapture.get(cv::CAP_PROP_FRAME_WIDTH));
 
 
 }

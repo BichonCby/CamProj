@@ -55,7 +55,7 @@
 #define IDX_CONF_CAM_SATURATION 24
 #define IDX_CONF_CAM_CONTRAST 25
 #define IDX_CONF_CAM_EXPOSURE 26
-
+#define IDX_CONF_MODE_FILE 27
 
 // pin GPIO
 #define GPIO_BUTTON_PLUS 26
@@ -141,6 +141,8 @@ private slots:
 
     void on_ExposureSlider_valueChanged(int value);
 
+    void on_FileONCheck_stateChanged(int arg1);
+
 private:
     void ticHorloge();
     void checkButton();
@@ -160,6 +162,7 @@ private:
     void DisplayClock(QString t);
     void DisplayAlarm(bool a);
     bool mCamOn = false;
+    bool mModeFichier = false; // mode fichier pour traiter une video et pas le flux camera
     QTimer *trigger;
     QTimer *buttonTimer;
     struct tConf sConf[NB_PARAM];

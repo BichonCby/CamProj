@@ -138,6 +138,13 @@
        </property>
       </widget>
      </item>
+     <item row="0" column="1">
+      <widget class="QCheckBox" name="FileONCheck">
+       <property name="text">
+        <string>FIle</string>
+       </property>
+      </widget>
+     </item>
     </layout>
    </widget>
    <widget class="QLabel" name="label_6">
@@ -159,7 +166,7 @@
       <x>520</x>
       <y>390</y>
       <width>215</width>
-      <height>51</height>
+      <height>67</height>
      </rect>
     </property>
     <layout class="QFormLayout" name="formLayout_3">
@@ -193,7 +200,7 @@
       </widget>
      </item>
      <item row="1" column="1">
-      <widget class="QLed" name="RecordLed" native="true">
+      <widget class="QLed" name="RecordLed">
        <property name="minimumSize">
         <size>
          <width>15</width>
@@ -212,13 +219,13 @@
        <property name="whatsThis">
         <string>Led widget</string>
        </property>
-       <property name="value" stdset="0">
+       <property name="value">
         <bool>false</bool>
        </property>
       </widget>
      </item>
      <item row="2" column="1">
-      <widget class="QLed" name="MouvementLed" native="true">
+      <widget class="QLed" name="MouvementLed">
        <property name="minimumSize">
         <size>
          <width>15</width>
@@ -237,7 +244,7 @@
        <property name="whatsThis">
         <string>Led widget</string>
        </property>
-       <property name="value" stdset="0">
+       <property name="value">
         <bool>false</bool>
        </property>
       </widget>
@@ -322,7 +329,7 @@
     </property>
     <layout class="QFormLayout" name="formLayout_4">
      <item row="0" column="0">
-      <widget class="QLed" name="Active_led" native="true">
+      <widget class="QLed" name="Active_led">
        <property name="minimumSize">
         <size>
          <width>31</width>
@@ -341,13 +348,13 @@
        <property name="whatsThis">
         <string>Led widget</string>
        </property>
-       <property name="value" stdset="0">
+       <property name="value">
         <bool>false</bool>
        </property>
       </widget>
      </item>
      <item row="1" column="0">
-      <widget class="QLed" name="Alarm_led" native="true">
+      <widget class="QLed" name="Alarm_led">
        <property name="minimumSize">
         <size>
          <width>31</width>
@@ -366,7 +373,7 @@
        <property name="whatsThis">
         <string>Led widget</string>
        </property>
-       <property name="value" stdset="0">
+       <property name="value">
         <bool>false</bool>
        </property>
       </widget>
@@ -516,7 +523,7 @@
      <string>PARAMETRES INTERNES</string>
     </property>
    </widget>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>521</x>

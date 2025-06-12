@@ -13,6 +13,7 @@ TEMPLATE = app
 
 #CONFIG += RASPBERRY_PI
 
+
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which has been marked as deprecated (the exact warnings
 # depend on your compiler). Please consult the documentation of the
@@ -62,7 +63,16 @@ win32 {
 }
 
 linux {
-    LIBS +=`pkg-config opencv --libs`  # Ligne de commande qui renvoie toutes les librairies opencv sous la forme "-lopencv... -lopencv..."
+    INCLUDEPATH +=/usr/include/opencv4
+    INCLUDEPATH +=/usr/include/x86_64-linux-gnu/qt5/plugins_designer
+#    LIBS +=`pkg-config opencv --libs`  # Ligne de commande qui renvoie toutes les librairies opencv sous la forme "-lopencv... -lopencv..."
+    LIBS +=`pkg-config --ccflags --libs opencv4` -lopencv_core -lopencv_videoio -lopencv_highgui  # Ligne de commande qui renvoie toutes les librairies opencv sous la forme "-lopencv... -lopencv..."
+#-lopencv_core -lopencv_videoio -lopencv_highgui
 }
 
 DISTFILES +=
+
+unix:!macx: LIBS += -L$$PWD/../../../usr/lib/x86_64-linux-gnu/ -lopencv_imgproc
+
+INCLUDEPATH += $$PWD/../../../usr/lib/x86_64-linux-gnu
+DEPENDPATH += $$PWD/../../../usr/lib/x86_64-linux-gnu
